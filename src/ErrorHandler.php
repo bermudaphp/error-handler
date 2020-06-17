@@ -17,7 +17,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class ErrorHandler
- * @package Lobster\Errors
+ * @package Lobster
  */
 class ErrorHandler implements MiddlewareInterface
 {
@@ -40,7 +40,7 @@ class ErrorHandler implements MiddlewareInterface
             $dispatcher = new Dispatcher();
         }
 
-        $this->dispatcher = $dispatcher->attach(new Provider(ErrorEvent::class));
+        $this->dispatcher = $dispatcher->attach(new Provider(Contracts\ErrorEvent::class));
     }
 
     /**
@@ -51,7 +51,7 @@ class ErrorHandler implements MiddlewareInterface
     {
         foreach ($listeners as $listener)
         {
-            $this->dispatcher->getProvider(ErrorEvent::class)->listen(Contracts\ErrorEvent::class, $listener);
+            $this->dispatcher->getProvider(Contracts\ErrorEvent::class)->listen(Contracts\ErrorEvent::class, $listener);
         }
 
         return $this;
