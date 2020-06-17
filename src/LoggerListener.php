@@ -9,7 +9,6 @@ use Lobster\Contracts\ErrorEvent;
 use Lobster\Contracts\ErrorListener;
 
 
-
 /**
  * Class LoggerListener
  * @package Lobster
