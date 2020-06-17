@@ -1,0 +1,16 @@
+{
+    "name": "lobster-php/error-handler",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Lobster\\": "src/",
+            "Lobster\\Contracts\\": "src/contracts"
+        }
+    },
+    "require": {
+        "php": ">= 7.4.0",
+        "psr/log": "^1.1.3",
+        "psr/http-factory": "^1.0.1",
+        "lobster-php/events": "^1.0"
+    }
+}
