@@ -4,19 +4,20 @@
 namespace Lobster;
 
 
-use Lobster\Contracts\ErrorResponseGenerator;
-use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Whoops\Handler\HandlerInterface;
-use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 use Whoops\RunInterface;
+use Whoops\Handler\HandlerInterface;
+use Whoops\Handler\PrettyPageHandler;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Lobster\Contracts\ErrorResponseGenerator;
+use Psr\Http\Message\ResponseFactoryInterface;
+
 
 
 /**
  * Class WhoopsErrorGenerator
- * @package Lobster\Errors
+ * @package Lobster
  */
 class WhoopsErrorGenerator implements ErrorResponseGenerator
 {
@@ -93,6 +94,6 @@ class WhoopsErrorGenerator implements ErrorResponseGenerator
      */
     protected function getHandlers() : iterable
     {
-        return [new PrettyPageHandler()];
+        yield new PrettyPageHandler();
     }
 }
