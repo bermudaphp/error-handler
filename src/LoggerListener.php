@@ -11,17 +11,15 @@ use Lobster\Contracts\ErrorListener;
 
 
 /**
- * Class LogErrorListener
+ * Class LoggerListener
  * @package Lobster
  */
-class LogErrorListener implements ErrorListener
+class LoggerListener implements ErrorListener
 {
-    private string $level;
     private LoggerInterface $logger;
 
-    public function __construct(LoggerInterface $logger, string $level = LogLevel::ERROR)
+    public function __construct(LoggerInterface $logger)
     {
-        $this->level = $level;
         $this->logger = $logger;
     }
 
@@ -30,6 +28,6 @@ class LogErrorListener implements ErrorListener
      */
     public function __invoke(ErrorEvent $event): void
     {
-        $this->logger->log($this->level, $event->getError()->getMessage(), ['exception' => $event->getError()]);
+        $this->logger->error(sprintf('%d [%s] %s: %s', $event->getResponse()->getStatusCode(), $req = $event->getRequest()->getMethod(), (string) $req->getUri(), $event->getError()->getMessage()));
     }
 }
