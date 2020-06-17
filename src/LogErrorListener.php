@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Lobster\Errors;
+namespace Lobster;
 
 
 use Psr\Log\LoggerInterface;
@@ -12,7 +12,7 @@ use Lobster\Contracts\ErrorListener;
 
 /**
  * Class LogErrorListener
- * @package Lobster\Errors
+ * @package Lobster
  */
 class LogErrorListener implements ErrorListener
 {
