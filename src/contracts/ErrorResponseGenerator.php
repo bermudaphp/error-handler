@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Interface ErrorResponseGenerator
- * @package Lobster
+ * @package Lobster\Contracts
  */
 interface ErrorResponseGenerator
 {
