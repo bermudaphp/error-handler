@@ -68,11 +68,6 @@ class ErrorHandler implements MiddlewareInterface
     {
         set_error_handler(function(int $errno, string $msg, string $file, int $line)
         {
-            if (! (error_reporting() & $errno))
-            {
-                return;
-            }
-
             throw new \ErrorException($msg, 0, $errno, $file, $line);
         });
 
