@@ -5,7 +5,10 @@
         "psr-4": {
             "Lobster\\": "src/",
             "Lobster\\Contracts\\": "src/contracts"
-        }
+        },
+        "files": [
+            "src/helper.php"
+        ]
     },
     "require": {
         "php": ">= 7.4.0",
