@@ -41,6 +41,8 @@ class ErrorHandler implements MiddlewareInterface
         }
 
         $this->dispatcher = $dispatcher->attach(new Provider(Contracts\ErrorEvent::class));
+        
+        return $this;
     }
 
     /**
