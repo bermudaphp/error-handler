@@ -1,11 +1,9 @@
 <?php
 
 
-namespace Lobster;
+namespace Bermuda\ErrorHandler;
 
 
-use Lobster\Contracts\ErrorResponseGenerator;
-use Lobster\Contracts\ErrorListener;
 use Lobster\Events\Dispatcher;
 use Lobster\Events\EventDispatcher;
 use Lobster\Events\Providers\Provider;
@@ -13,18 +11,20 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Bermuda\ErrorHandler\ErrorListenerInterface;
+use Bermuda\ErrorHandler\ErrorResponseGeneratorIntreface;
 
 
 /**
- * Class ErrorHandler
- * @package Lobster
+ * Class ErrorHandlerMiddleware
+ * @package Bermuda\ErrorHandler
  */
-class ErrorHandler implements MiddlewareInterface
+class ErrorHandlerMiddleware implements MiddlewareInterface
 {
-    private EventDispatcher $dispatcher;
-    private ErrorResponseGenerator $generator;
+    private EventDispatcherInterface $dispatcher;
+    private ErrorResponseGeneratorInterface $generator;
 
-    public function __construct(ErrorResponseGenerator $generator, EventDispatcher $dispatcher = null)
+    public function __construct(ErrorResponseGeneratorInterface $generator, EventDispatcherInterface $dispatcher = null)
     {
         $this->setDispatcher($dispatcher)->generator = $generator;
     }
@@ -66,7 +66,7 @@ class ErrorHandler implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        set_error_handler(function(int $errno, string $msg, string $file, int $line)
+        set_error_handler(static function(int $errno, string $msg, string $file, int $line)
         {
             if (! (error_reporting() & $errno))
             {
