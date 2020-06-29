@@ -33,14 +33,14 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
      * @param EventDispatcher|null $dispatcher
      * @return $this
      */
-    private function setDispatcher(?EventDispatcher $dispatcher) : self
+    private function setDispatcher(?EventDispatcherInterface $dispatcher) : self
     {
         if (!$dispatcher)
         {
             $dispatcher = new Dispatcher();
         }
 
-        $this->dispatcher = $dispatcher->attach(new Provider(Contracts\ErrorEvent::class));
+        $this->dispatcher = $dispatcher->attach(new Provider(ErrorEvent::class));
         
         return $this;
     }
