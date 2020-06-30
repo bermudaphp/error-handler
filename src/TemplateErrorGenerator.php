@@ -1,33 +1,35 @@
 <?php
 
 
-namespace Lobster;
+namespace Bermuda\ErrorHandler;
 
 
-use Lobster\Contracts\ErrorResponseGenerator;
-use Lobster\Contracts\Renderer;
-use Psr\Http\Message\ResponseFactoryInterface;
+use Bermuda\Templater\RendererInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 
 /**
  * Class TemplateErrorGenerator
- * @package Lobster
+ * @package Bermuda\ErrorHandler
  */
-class TemplateErrorGenerator implements ErrorResponseGenerator
+final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
 {
-    private Renderer $renderer;
+    /**
+     * @var callable
+     */
+    private $templateRenderer;
     private ResponseFactoryInterface $factory;
 
-    /**
-     * TemplateErrorGenerator constructor.
-     * @param Renderer $renderer
-     */
-    public function __construct(Renderer $renderer, ResponseFactoryInterface $factory)
+    public function __construct(callable $templateRenderer, ResponseFactoryInterface $factory)
     {
-        $this->renderer = $renderer;
         $this->factory = $factory;
+        
+        $this->templateRenderer = static function ($code) use($templateRenderer): string
+        {
+            return $templateRenderer($code);
+        };
     }
 
     /**
@@ -39,17 +41,8 @@ class TemplateErrorGenerator implements ErrorResponseGenerator
     {
         $response = $this->factory->createResponse($code = status_code($e));
         $response = $response->withHeader('Content-Type', 'text/html');
-        $response->getBody()->write($this->renderer->render($this->getTemplate($code)));
+        $response->getBody()->write(($this->templateRenderer)($code));
 
         return $response;
-    }
-
-    /**
-     * @param int $code
-     * @return string
-     */
-    protected function getTemplate(int $code) : string
-    {
-        return 'error::' . $code ;
     }
 }
