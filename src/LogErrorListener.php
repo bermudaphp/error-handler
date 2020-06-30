@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
  * Class LoggerListener
  * @package Bermuda\ErrorHandler
  */
-class LoggerListener implements ErrorListener
+class LogErrorListener implements ErrorListener
 {
     private LoggerInterface $logger;
 
