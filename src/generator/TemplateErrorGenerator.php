@@ -4,10 +4,10 @@
 namespace Bermuda\ErrorHandler;
 
 
-use Bermuda\Templater\RendererInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 
 
 /**
