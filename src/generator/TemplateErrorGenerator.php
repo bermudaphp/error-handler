@@ -26,7 +26,7 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
     {
         $this->factory = $factory;
         
-        $this->templateRenderer = static function ($code) use($templateRenderer): string
+        $this->templateRenderer = static function ($code) use ($templateRenderer): string
         {
             return $templateRenderer($code);
         };
@@ -39,7 +39,7 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
      */
     public function generate(\Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
-        $response = $this->factory->createResponse($code = status_code($e));
+        $response = $this->factory->createResponse($code = get_status_code_from_throwable($e));
         $response = $response->withHeader('Content-Type', 'text/html');
         $response->getBody()->write(($this->templateRenderer)($code));
 
