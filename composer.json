@@ -1,10 +1,9 @@
 {
-    "name": "lobster-php/error-handler",
+    "name": "bermudaphp/error-handler",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Lobster\\": "src/",
-            "Lobster\\Contracts\\": "src/contracts"
+            "Bermuda\\ErrorHandler\\": "src/"
         },
         "files": [
             "src/helper.php"
@@ -14,6 +13,6 @@
         "php": ">= 7.4.0",
         "psr/log": "^1.1.3",
         "psr/http-factory": "^1.0.1",
-        "lobster-php/events": "^1.0"
+        "bermudaphp/eventor": "^1.0"
     }
 }
