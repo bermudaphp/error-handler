@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Lobster;
+namespace Bermuda\ErrorHandler;
 
 
 use Whoops\Run;
@@ -10,14 +10,13 @@ use Whoops\Handler\HandlerInterface;
 use Whoops\Handler\PrettyPageHandler;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Lobster\Contracts\ErrorResponseGenerator;
 use Psr\Http\Message\ResponseFactoryInterface;
 
 
 
 /**
  * Class WhoopsErrorGenerator
- * @package Lobster
+ * @package Bermuda\ErrorHandler
  */
 class WhoopsErrorGenerator implements ErrorResponseGenerator
 {
