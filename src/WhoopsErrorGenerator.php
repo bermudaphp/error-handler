@@ -11,14 +11,14 @@ use Whoops\Handler\PrettyPageHandler;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
-
+use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 
 
 /**
  * Class WhoopsErrorGenerator
  * @package Bermuda\ErrorHandler
  */
-class WhoopsErrorGenerator implements ErrorResponseGenerator
+class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
 {
     private RunInterface $whoops;
     private ResponseFactoryInterface $factory;
