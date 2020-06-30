@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Lobster;
+namespace Bermuda\ErrorHandler;
 
 
 use Throwable;
@@ -11,20 +11,14 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class ErrorEvent
- * @package Lobster
+ * @package Bermuda\ErrorHandler
  */
-class ErrorEvent implements Contracts\ErrorEvent
+class ErrorEvent
 {
     protected Throwable $error;
     protected ResponseInterface $response;
     protected ServerRequestInterface $request;
 
-    /**
-     * ErrorEvent constructor.
-     * @param Throwable $e
-     * @param ServerRequestInterface $req
-     * @param ResponseInterface $resp
-     */
     public function __construct(Throwable $e, ServerRequestInterface $req, ResponseInterface $resp)
     {
         $this->error = $e;
