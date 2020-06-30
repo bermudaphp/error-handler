@@ -1,17 +1,15 @@
 <?php
 
 
-namespace Lobster;
+namespace Bermuda\ErrorHandler;
 
 
 use Psr\Log\LoggerInterface;
-use Lobster\Contracts\ErrorEvent;
-use Lobster\Contracts\ErrorListener;
 
 
 /**
  * Class LoggerListener
- * @package Lobster
+ * @package Bermuda\ErrorHandler
  */
 class LoggerListener implements ErrorListener
 {
@@ -27,6 +25,6 @@ class LoggerListener implements ErrorListener
      */
     public function __invoke(ErrorEvent $event): void
     {
-        $this->logger->error(sprintf('%d [%s] %s: %s', $event->getResponse()->getStatusCode(), $req = $event->getRequest()->getMethod(), (string) $req->getUri(), $event->getError()->getMessage()));
+        $this->logger->error(sprintf('%d [%s] %s: %s', $event->getResponse()->getStatusCode(), $req = $event->getRequest()->getMethod(), (string) $req->getUri(), $event->getThrowable()->getMessage()));
     }
 }
