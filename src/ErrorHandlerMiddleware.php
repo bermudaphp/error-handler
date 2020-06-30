@@ -24,7 +24,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
 
     public function __construct(ErrorResponseGeneratorInterface $generator, EventDispatcherFactoryInterface $factory = null)
     {
-        $this->setDispatcherFromFactory($factory)
+        $this->setEventDispatcherFromFactory($factory)
             ->generator = $generator;
     }
     
@@ -41,7 +41,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
      * @param EventDispatcherFactoryInterface|null $factory
      * @return $this
      */
-    private function setDispatcherFromFactory(?EventDispatcherFactoryInterface $factory): self
+    private function setEventDispatcherFromFactory(?EventDispatcherFactoryInterface $factory): self
     {
         if (!$factory)
         {
