@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Lobster\Contracts;
+namespace Bermuda\ErrorHandler;
 
 
 use Psr\Http\Message\ResponseInterface;
@@ -9,10 +9,10 @@ use Psr\Http\Message\ServerRequestInterface;
 
 
 /**
- * Interface ErrorResponseGenerator
- * @package Lobster\Contracts
+ * Interface ErrorResponseGeneratorInterface
+ * @package Bermuda\ErrorHandler
  */
-interface ErrorResponseGenerator
+interface ErrorResponseGeneratorInterface
 {
     public function generate(\Throwable $e, ServerRequestInterface $request): ResponseInterface;
 }
