@@ -94,6 +94,8 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
             $response = $this->generator->generate($e, $request);
             $this->dispatcher->dispatch(new ErrorEvent($e, $request, $response));
         }
+        
+        restore_error_handler();
 
         return $response;
     }
