@@ -4,15 +4,13 @@
 namespace Bermuda\ErrorHandler;
 
 
-use Lobster\Events\Dispatcher;
-use Lobster\Events\EventDispatcher;
-use Lobster\Events\Providers\Provider;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Bermuda\ErrorHandler\ErrorListenerInterface;
-use Bermuda\ErrorHandler\ErrorResponseGeneratorIntreface;
+use Bermuda\Eventor\EventDispatcherFactory;
+use Bermuda\Eventor\EventDispatcherInterface;
+use Bermuda\Eventor\EventDispatcherFactoryInterface;
 
 
 /**
@@ -24,36 +22,46 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
     private EventDispatcherInterface $dispatcher;
     private ErrorResponseGeneratorInterface $generator;
 
-    public function __construct(ErrorResponseGeneratorInterface $generator, EventDispatcherInterface $dispatcher = null)
+    public function __construct(ErrorResponseGeneratorInterface $generator, EventDispatcherFactoryInterface $factory = null)
     {
-        $this->setDispatcher($dispatcher)->generator = $generator;
+        $this->setDispatcherFromFactory($factory)
+            ->generator = $generator;
+    }
+    
+    /**
+     * @param int $level
+     * @return int
+     */
+    public function setErrorLevel(int $level): int 
+    {
+        return error_reporting($level);
     }
 
     /**
-     * @param EventDispatcher|null $dispatcher
+     * @param EventDispatcherFactoryInterface|null $factory
      * @return $this
      */
-    private function setDispatcher(?EventDispatcherInterface $dispatcher) : self
+    private function setDispatcherFromFactory(?EventDispatcherFactoryInterface $factory): self
     {
-        if (!$dispatcher)
+        if (!$factory)
         {
-            $dispatcher = new Dispatcher();
+            $factory = new EventDispatcherFactory;
         }
 
-        $this->dispatcher = $dispatcher->attach(new Provider(ErrorEvent::class));
+        $this->dispatcher = $factory->make();
         
         return $this;
     }
 
     /**
-     * @param ErrorListener ... $listeners
+     * @param ErrorListenerInterface $listener
      * @return $this
      */
-    public function listen(ErrorListener ... $listeners) : self
+    public function listen(ErrorListenerInterface $listener): self
     {
         foreach ($listeners as $listener)
         {
-            $this->dispatcher->getProvider(Contracts\ErrorEvent::class)->listen(Contracts\ErrorEvent::class, $listener);
+            $this->dispatcher->getProvider()->listen(ErrorEvent::class, $listener);
         }
 
         return $this;
