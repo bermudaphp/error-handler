@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Bermuda\ErrorHandler;
+namespace Bermuda\ErrorHandler\Generator;
 
 
 use Whoops\Run;
