@@ -4,6 +4,9 @@
 namespace Bermuda\ErrorHandler\Generator;
 
 
+use function Bermuda\get_status_code_from_throwable;
+
+
 use Whoops\Run;
 use Whoops\RunInterface;
 use Whoops\Handler\HandlerInterface;
