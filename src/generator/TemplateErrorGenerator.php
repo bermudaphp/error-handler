@@ -4,6 +4,9 @@
 namespace Bermuda\ErrorHandler\Generator;
 
 
+use function Bermuda\get_status_code_from_throwable;
+
+
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
