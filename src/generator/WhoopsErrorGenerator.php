@@ -12,12 +12,14 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
+
+
 use function Bermuda\ErrorHandler\get_status_code_from_throwable;
 
 
 /**
  * Class WhoopsErrorGenerator
- * @package Bermuda\ErrorHandler
+ * @package Bermuda\ErrorHandler\Generator
  */
 class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
 {
@@ -47,7 +49,7 @@ class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
      * @param ServerRequestInterface $request
      * @return string
      */
-    protected function handleException(\Throwable $e, ServerRequestInterface $request) : string
+    protected function handleException(\Throwable $e, ServerRequestInterface $request): string
     {
         foreach ($this->whoops->getHandlers() as $handler)
         {
@@ -61,7 +63,7 @@ class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
      * @param RunInterface|null $whoops
      * @return $this
      */
-    protected function setWhoops(?RunInterface $whoops) : self
+    protected function setWhoops(?RunInterface $whoops): self
     {
         if (!$whoops)
         {
@@ -85,14 +87,14 @@ class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
      * @param PrettyPageHandler $handler
      * @param ServerRequestInterface $request
      */
-    protected function addRequestInformation($handler, ServerRequestInterface $request) : void
+    protected function addRequestInformation($handler, ServerRequestInterface $request): void
     {
     }
 
     /**
      * @return HandlerInterface[]
      */
-    protected function getHandlers() : iterable
+    protected function getHandlers(): iterable
     {
         yield new PrettyPageHandler();
     }
