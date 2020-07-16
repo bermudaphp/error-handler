@@ -8,6 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
+
+
 use function Bermuda\ErrorHandler\get_status_code_from_throwable;
 
 
@@ -26,7 +28,6 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
     public function __construct(callable $templateRenderer, ResponseFactoryInterface $factory)
     {
         $this->factory = $factory;
-        
         $this->templateRenderer = static function ($code) use ($templateRenderer): string
         {
             return $templateRenderer($code);
