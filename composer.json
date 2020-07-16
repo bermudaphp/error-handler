@@ -13,9 +13,7 @@
         "php": ">= 7.4.0",
         "psr/log": "^1.1.3",
         "psr/http-factory": "^1.0.1",
-        "bermudaphp/eventor": "^1.0"
-    },
-    "require-dev": {
+        "bermudaphp/eventor": "^1.0",
         "filp/whoops": "^2.7.3"
     }
 }
