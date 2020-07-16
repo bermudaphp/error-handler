@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Bermuda;
+namespace Bermuda\ErrorHandler;
 
 
 /**
