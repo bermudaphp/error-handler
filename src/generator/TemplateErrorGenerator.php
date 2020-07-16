@@ -15,7 +15,7 @@ use function Bermuda\ErrorHandler\get_status_code_from_throwable;
 
 /**
  * Class TemplateErrorGenerator
- * @package Bermuda\ErrorHandler
+ * @package Bermuda\ErrorHandler\Generator
  */
 final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
 {
