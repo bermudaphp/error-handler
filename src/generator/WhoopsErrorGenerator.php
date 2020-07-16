@@ -4,9 +4,6 @@
 namespace Bermuda\ErrorHandler\Generator;
 
 
-use function Bermuda\get_status_code_from_throwable;
-
-
 use Whoops\Run;
 use Whoops\RunInterface;
 use Whoops\Handler\HandlerInterface;
@@ -15,6 +12,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
+use function Bermuda\ErrorHandler\get_status_code_from_throwable;
 
 
 /**
