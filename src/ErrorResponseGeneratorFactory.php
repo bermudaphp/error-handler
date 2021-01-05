@@ -28,7 +28,7 @@ class ErrorResponseGeneratorFactory
         
         return new TemplateErrorGenerator(static function ($code) use ($c)
         {
-            return $c->get(RendererInterface::class)->render('error::' . $code);
+            return $c->get(RendererInterface::class)->render('errors::' . $code);
         }, $c->get(ResponseFactoryInterface::class));
     }
 }
