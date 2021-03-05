@@ -1,11 +1,8 @@
 <?php
 
-
 namespace Bermuda\ErrorHandler;
 
-
 use Psr\Log\LoggerInterface;
-
 
 /**
  * Class LoggerListener
