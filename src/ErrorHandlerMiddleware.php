@@ -22,7 +22,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
     public function __construct(ErrorResponseGeneratorInterface $generator, EventDispatcherInterface $dispatcher = null)
     {
         $this->setGenerator($generator);
-        $this->setDispatcher($dispatcher);
+        $this->setDispatcher($dispatcher ?? new EventDispatcher());
     }
     
     /**
@@ -40,7 +40,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      */
     public function setDispatcher(?EventDispatcherInterface $dispatcher): self
     {
-        $this->dispatcher = $dispatcher;
+        $this->dispatcher = $dispatcher->attach($this->provider);
         return $this;
     }
     
@@ -52,6 +52,15 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
     {
         $this->generator = $generator;
         return $this;
+    }
+    
+    /**
+     * @param ErrorListenerInterface $listener
+     * @return void
+     */
+    public function listen(ErrorListenerInterface $listener): void
+    {
+        $this->provider->listen($listener);
     }
     
     /**
@@ -82,7 +91,9 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
             
             if ($this->dispatcher)
             {
-                $response = $this->dispatcher->dispatch(new ErrorEvent($e, $request, $response))->getResponse();
+                $response = $this->dispatcher->dispatch(
+                    new ErrorEvent($e, $request, $response))
+                    ->getResponse();
             }
         }
         
