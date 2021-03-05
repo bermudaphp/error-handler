@@ -29,7 +29,7 @@ final class ErrorEvent extends \RuntimeException
     /**
      * @return Throwable
      */
-    public function getError(): Throwable
+    public function getThrowable(): Throwable
     {
         return $this->getPrevious();
     }
