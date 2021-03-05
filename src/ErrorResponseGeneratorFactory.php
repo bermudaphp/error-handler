@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Bermuda\ErrorHandler;
-
 
 use Whoops\RunInterface;
 use Psr\Container\ContainerInterface;
@@ -11,19 +9,18 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Bermuda\ErrorHandler\Generator\WhoopsErrorGenerator;
 use Bermuda\ErrorHandler\Generator\TemplateErrorGenerator;
 
-
 class ErrorResponseGeneratorFactory
 {
-    public function __invoke(ContainerInterface $c): ErrorResponseGeneratorInterface
+    public function __invoke(ContainerInterface $container): ErrorResponseGeneratorInterface
     {
-        if ($c->get('config')['debug'])
+        if ($container->get('config')['debug'])
         {
-            if ($c->has(RunInterface::class))
+            if ($container->has(RunInterface::class))
             {
-                $run = $c->get(RunInterface::class);
+                $run = $container->get(RunInterface::class);
             }
 
-            return new WhoopsErrorGenerator($c->get(ResponseFactoryInterface::class), $run ?? null);
+            return new WhoopsErrorGenerator($container->get(ResponseFactoryInterface::class), $run ?? null);
         }
         
         return new TemplateErrorGenerator(static function ($code) use ($c)
