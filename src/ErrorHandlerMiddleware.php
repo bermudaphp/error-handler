@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Bermuda\ErrorHandler;
-
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,20 +10,19 @@ use Bermuda\Eventor\EventDispatcherFactory;
 use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\EventDispatcherFactoryInterface;
 
-
 /**
  * Class ErrorHandlerMiddleware
  * @package Bermuda\ErrorHandler
  */
-class ErrorHandlerMiddleware implements MiddlewareInterface
+final class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     private EventDispatcherInterface $dispatcher;
     private ErrorResponseGeneratorInterface $generator;
 
-    public function __construct(ErrorResponseGeneratorInterface $generator, EventDispatcherFactoryInterface $factory = null)
+    public function __construct(ErrorResponseGeneratorInterface $generator, EventDispatcherInterface $dispatcher = null)
     {
-        $this->setEventDispatcherFromFactory($factory)
-            ->generator = $generator;
+        $this->setGenerator($generator);
+        $this->setDispatcher($dispatcher);
     }
     
     /**
@@ -36,37 +33,27 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
     {
         return error_reporting($level);
     }
-
+    
     /**
-     * @param EventDispatcherFactoryInterface|null $factory
-     * @return $this
+     * @param EventDispatcherInterface $dispatcher
+     * @return self
      */
-    private function setEventDispatcherFromFactory(?EventDispatcherFactoryInterface $factory): self
+    public function setDispatcher(?EventDispatcherInterface $dispatcher): self
     {
-        if (!$factory)
-        {
-            $factory = new EventDispatcherFactory;
-        }
-
-        $this->dispatcher = $factory->make();
-        
+        $this->dispatcher = $dispatcher;
         return $this;
     }
-
+    
     /**
-     * @param ErrorListenerInterface $listener
-     * @return $this
+     * @param ErrorResponseGenerator $generator
+     * @return self
      */
-    public function listen(ErrorListenerInterface $listener): self
+    public function setGenerator(ErrorResponseGenerator $generator): self
     {
-        foreach ($listeners as $listener)
-        {
-            $this->dispatcher->getProvider()->listen(ErrorEvent::class, $listener);
-        }
-
+        $this->generator = $generator;
         return $this;
     }
-
+    
     /**
      * @param ServerRequestInterface $request
      * @param RequestHandlerInterface $handler
@@ -76,7 +63,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
     {
         set_error_handler(static function(int $errno, string $msg, string $file, int $line)
         {
-            if (! (error_reporting() & $errno))
+            if (!(error_reporting() & $errno))
             {
                 return;
             }
@@ -92,7 +79,11 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
         catch (\Throwable $e)
         {
             $response = $this->generator->generate($e, $request);
-            $this->dispatcher->dispatch(new ErrorEvent($e, $request, $response));
+            
+            if ($this->dispatcher)
+            {
+                $response = $this->dispatcher->dispatch(new ErrorEvent($e, $request, $response))->getResponse();
+            }
         }
         
         restore_error_handler();
