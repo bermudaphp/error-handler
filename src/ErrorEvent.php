@@ -1,13 +1,10 @@
 <?php
 
-
 namespace Bermuda\ErrorHandler;
-
 
 use Throwable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-
 
 /**
  * Class ErrorEvent
@@ -51,5 +48,14 @@ final class ErrorEvent extends \RuntimeException
     public function getRequest(): ServerRequestInterface
     {
         return $this->request;
+    }
+    
+    /**
+     * @return ResponseInterface
+     */
+    public function setResponse(ResponseInterface $response): self
+    {
+        $this->response = $response;
+        return $this;
     }
 }
