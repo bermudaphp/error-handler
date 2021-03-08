@@ -1,17 +1,13 @@
 <?php
 
-
 namespace Bermuda\ErrorHandler\Generator;
-
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 
-
 use function Bermuda\ErrorHandler\get_status_code_from_throwable;
-
 
 /**
  * Class TemplateErrorGenerator
