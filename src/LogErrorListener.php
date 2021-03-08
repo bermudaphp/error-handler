@@ -5,7 +5,7 @@ namespace Bermuda\ErrorHandler;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class LoggerListener
+ * Class LogErrorListener
  * @package Bermuda\ErrorHandler
  */
 class LogErrorListener implements ErrorListener
