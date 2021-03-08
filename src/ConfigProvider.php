@@ -9,8 +9,6 @@ final class ConfigProvider extends \Bermuda\Config\ConfigProvider
      */
     protected function getFactories(): array
     {
-        return [
-            ErrorResponseGeneratorInterface::class => ErrorResponseGeneratorFactory::class
-        ];
+        return [ErrorResponseGeneratorInterface::class => ErrorResponseGeneratorFactory::class];
     }
 }
