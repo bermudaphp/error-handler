@@ -92,7 +92,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
             {
                 $response = $this->dispatcher
                     ->dispatch(new ErrorEvent($e, $request, $response))
-                    ->getResponse();
+                    ->response();
             }
         }
         
