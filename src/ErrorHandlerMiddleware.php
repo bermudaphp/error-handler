@@ -91,8 +91,8 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
             
             if ($this->dispatcher)
             {
-                $response = $this->dispatcher->dispatch(
-                    new ErrorEvent($e, $request, $response))
+                $response = $this->dispatcher
+                    ->dispatch(new ErrorEvent($e, $request, $response))
                     ->getResponse();
             }
         }
