@@ -6,10 +6,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Bermuda\Eventor\EventDispatcherFactory;
 use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
-use Bermuda\Eventor\EventDispatcherFactoryInterface;
 
 /**
  * Class ErrorHandlerMiddleware
