@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Bermuda\ErrorHandler;
-
 
 use Whoops\RunInterface;
 use Psr\Container\ContainerInterface;
@@ -13,15 +11,12 @@ use Bermuda\ErrorHandler\Generator\WhoopsErrorGenerator;
 use Bermuda\ErrorHandler\Generator\TemplateErrorGenerator;
 use Bermuda\RequestHandlerRunner\RequestHandlerRunnerFactory;
 
-
-final class ConfigProvider
+final class ConfigProvider extends \Bermuda\Config\ConfigProvider
 {
-    public function __invoke(): array
-    {
-        return ['dependencies' => ['factories' => $this->getFactories()]];
-    }
-
-    private function getFactories(): array
+    /**
+     * @inheritDoc
+     */
+    protected function getFactories(): array
     {
         return [
             RequestFactoryInterface::class => $psr17factory = static function()
