@@ -66,9 +66,9 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      * @param ErrorListenerInterface $listener
      * @return void
      */
-    public function listen(ErrorListenerInterface $listener): void
+    public function listen(ErrorListenerInterface $listener, int $priority = 0): void
     {
-        $this->provider->listen($listener);
+        $this->provider->listen($listener, $priority);
     }
     
     /**
