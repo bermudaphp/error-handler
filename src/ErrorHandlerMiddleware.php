@@ -8,6 +8,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Bermuda\Eventor\EventDispatcherFactory;
 use Bermuda\Eventor\EventDispatcherInterface;
+use Bermuda\Eventor\Provider\PrioritizedProvider;
 use Bermuda\Eventor\EventDispatcherFactoryInterface;
 
 /**
@@ -16,6 +17,7 @@ use Bermuda\Eventor\EventDispatcherFactoryInterface;
  */
 final class ErrorHandlerMiddleware implements MiddlewareInterface
 {
+    private PrioritizedProvider $provider;
     private EventDispatcherInterface $dispatcher;
     private ErrorResponseGeneratorInterface $generator;
 
@@ -40,7 +42,13 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      */
     public function setDispatcher(?EventDispatcherInterface $dispatcher): self
     {
+        if (!$this->provider)
+        {
+            $this->provider = new PrioritizedProvider();
+        }
+        
         $this->dispatcher = $dispatcher->attach($this->provider);
+        
         return $this;
     }
     
@@ -70,15 +78,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        set_error_handler(static function(int $errno, string $msg, string $file, int $line)
-        {
-            if (!(error_reporting() & $errno))
-            {
-                return;
-            }
-
-            throw new \ErrorException($msg, 0, $errno, $file, $line);
-        });
+        set_error_handler($this->createHandler());
 
         try
         {
@@ -100,5 +100,21 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
         restore_error_handler();
 
         return $response;
+    }
+    
+    private function createHandler(): callable
+    {
+        return new class
+        {
+            public function __invoke(int $errno, string $msg, string $file, int $line)
+            {
+                if (!(error_reporting() & $errno))
+                {
+                    return;
+                }
+
+                throw new \ErrorException($msg, 0, $errno, $file, $line);
+            }
+        }
     }
 }
