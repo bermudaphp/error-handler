@@ -19,17 +19,7 @@ final class ConfigProvider extends \Bermuda\Config\ConfigProvider
     protected function getFactories(): array
     {
         return [
-            RequestFactoryInterface::class => $psr17factory = static function()
-            {
-                return new Psr17Factory();
-            },
-            UriFactoryInterface::class => $psr17factory,
-            ServerRequestFactoryInterface::class => $psr17factory,
-            ResponseFactoryInterface::class => $psr17factory,
-            UploadedFileFactoryInterface::class => $psr17factory,
-            StreamFactoryInterface::class => $psr17factory,
             EmitterInterface::class => EmitterFactory::class,
-            RequestHandlerRunner::class => RequestHandlerRunnerFactory::class,
             ErrorResponseGeneratorInterface::class => ErrorResponseGeneratorFactory::class
         ];
     }
