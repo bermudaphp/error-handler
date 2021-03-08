@@ -23,9 +23,9 @@ class ErrorResponseGeneratorFactory
             return new WhoopsErrorGenerator($container->get(ResponseFactoryInterface::class), $run ?? null);
         }
         
-        return new TemplateErrorGenerator(static function ($code) use ($c)
+        return new TemplateErrorGenerator(static function ($code) use ($container)
         {
-            return $c->get(RendererInterface::class)->render('errors::' . $code);
-        }, $c->get(ResponseFactoryInterface::class));
+            return $container->get(RendererInterface::class)->render('errors::' . $code);
+        }, $container->get(ResponseFactoryInterface::class));
     }
 }
