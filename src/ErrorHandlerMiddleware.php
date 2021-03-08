@@ -2,6 +2,7 @@
 
 namespace Bermuda\ErrorHandler;
 
+use Bermuda\Eventor\EventDispatcher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -15,8 +16,8 @@ use Bermuda\Eventor\Provider\PrioritizedProvider;
  */
 final class ErrorHandlerMiddleware implements MiddlewareInterface
 {
-    private PrioritizedProvider $provider;
     private EventDispatcherInterface $dispatcher;
+    private ?PrioritizedProvider $provider = null;
     private ErrorResponseGeneratorInterface $generator;
 
     public function __construct(ErrorResponseGeneratorInterface $generator, EventDispatcherInterface $dispatcher = null)
@@ -54,7 +55,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      * @param ErrorResponseGenerator $generator
      * @return self
      */
-    public function setGenerator(ErrorResponseGenerator $generator): self
+    public function setGenerator(ErrorResponseGeneratorInterface $generator): self
     {
         $this->generator = $generator;
         return $this;
@@ -113,6 +114,6 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
 
                 throw new \ErrorException($msg, 0, $errno, $file, $line);
             }
-        }
+        };
     }
 }
