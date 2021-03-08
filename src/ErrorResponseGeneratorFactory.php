@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Bermuda\ErrorHandler\Generator\WhoopsErrorGenerator;
 use Bermuda\ErrorHandler\Generator\TemplateErrorGenerator;
 
-class ErrorResponseGeneratorFactory
+final class ErrorResponseGeneratorFactory
 {
     public function __invoke(ContainerInterface $container): ErrorResponseGeneratorInterface
     {
