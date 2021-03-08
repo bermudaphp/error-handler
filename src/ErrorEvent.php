@@ -35,10 +35,16 @@ final class ErrorEvent extends \RuntimeException
     }
 
     /**
+     * @param ResponseInterface|null $response
      * @return ResponseInterface
      */
-    public function getResponse(): ResponseInterface
+    public function response(?ResponseInterface $response = null): ResponseInterface
     {
+        if ($response != null)
+        {
+            $this->response = $response;
+        }
+        
         return $this->response;
     }
 
@@ -48,14 +54,5 @@ final class ErrorEvent extends \RuntimeException
     public function getRequest(): ServerRequestInterface
     {
         return $this->request;
-    }
-    
-    /**
-     * @return ResponseInterface
-     */
-    public function setResponse(ResponseInterface $response): self
-    {
-        $this->response = $response;
-        return $this;
     }
 }
