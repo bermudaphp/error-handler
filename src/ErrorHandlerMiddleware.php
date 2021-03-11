@@ -113,17 +113,8 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      */                                             
     public function handleException(Throwable $e, ?ServerRequestInterface $request = null): ResponseInterface
     {
-        $request = $request ?? ServerRequestFactory::fromGlobals();
-        $response = $this->generator->generate($e, $request);
-            
-        if ($this->dispatcher)
-        {
-            $response = $this->dispatcher
-                ->dispatch(new ErrorEvent($e, $request, $response))
-                ->response();
-        }
-        
-        return $response;
+        $response = $this->generator->generate($e, $request = $request ?? ServerRequestFactory::fromGlobals());
+        return $response = $this->dispatcher->dispatch(new ErrorEvent($e, $request, $response))->response();
     }
     
     private function createHandler(): callable
