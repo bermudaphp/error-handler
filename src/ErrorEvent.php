@@ -10,20 +10,17 @@ use Psr\Http\Message\ServerRequestInterface;
  * Class ErrorEvent
  * @package Bermuda\ErrorHandler
  */
-final class ErrorEvent extends \RuntimeException
+final class ErrorEvent
 {
+    private Throwable $e;
     private ResponseInterface $response;
     private ServerRequestInterface $request;
 
-    public function __construct(Throwable $e, ServerRequestInterface $req, ResponseInterface $resp)
+    public function __construct(Throwable $e, ServerRequestInterface $request, ResponseInterface $response)
     {
-        parent::__construct($e->getMessage(), $e->getCode(), $e);
-        
-        $this->file = $e->getFile();
-        $this->line = $e->getLine();
-        
-        $this->request = $req;
-        $this->response = $resp;
+        $this->e = $e;
+        $this->request = $request;
+        $this->response = $response;
     }
 
     /**
@@ -31,7 +28,7 @@ final class ErrorEvent extends \RuntimeException
      */
     public function getThrowable(): Throwable
     {
-        return $this->getPrevious();
+        return $this->e;
     }
 
     /**
