@@ -86,18 +86,30 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
 
         catch (\Throwable $e)
         {
-            $response = $this->generator->generate($e, $request);
-            
-            if ($this->dispatcher)
-            {
-                $response = $this->dispatcher
-                    ->dispatch(new ErrorEvent($e, $request, $response))
-                    ->response();
-            }
+            $response = $this->handleException($e);
         }
         
         restore_error_handler();
 
+        return $response;
+    }
+    
+    /**
+     * Handle exception and fire ErrorEvent
+     * @param Throwable $e
+     * @return ResponseInterface
+     */                                             
+    public function handleException(Throwable $e): ResponseInterface
+    {
+        $response = $this->generator->generate($e, $request);
+            
+        if ($this->dispatcher)
+        {
+            $response = $this->dispatcher
+                ->dispatch(new ErrorEvent($e, $request, $response))
+                ->response();
+        }
+        
         return $response;
     }
     
