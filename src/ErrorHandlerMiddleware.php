@@ -45,11 +45,6 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
         return $this->errorLevel;
     }
     
-    public function setErrorLevel(int $level): int 
-    {
-        return error_reporting($this->errorLevel = $level);
-    }
-    
     /**
      * @param EventDispatcherInterface $dispatcher
      * @return self
