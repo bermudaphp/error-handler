@@ -10,6 +10,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
+use Bermuda\RequestHandlerRunner\ServerRequestFactory;
 
 /**
  * Class ErrorHandlerMiddleware
@@ -102,6 +103,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      */                                             
     public function handleException(Throwable $e, ?ServerRequestInterface $request = null): ResponseInterface
     {
+        $request = $request ?? ServerRequestFactory::fromGlobals();
         $response = $this->generator->generate($e, $request);
             
         if ($this->dispatcher)
