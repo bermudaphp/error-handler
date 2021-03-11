@@ -18,23 +18,36 @@ use Bermuda\RequestHandlerRunner\ServerRequestFactory;
  */
 final class ErrorHandlerMiddleware implements MiddlewareInterface
 {
+    private int $errorLevel;
     private EventDispatcherInterface $dispatcher;
     private ?PrioritizedProvider $provider = null;
     private ErrorResponseGeneratorInterface $generator;
-
+    
     public function __construct(ErrorResponseGeneratorInterface $generator, EventDispatcherInterface $dispatcher = null)
     {
+        $this->errorLevel(E_ALL);
         $this->setGenerator($generator);
         $this->setDispatcher($dispatcher ?? new EventDispatcher());
     }
     
     /**
-     * @param int $level
+     * Set error_reporting level or return current level if no level parameter is given. 
+     * @param int|null $level
      * @return int
      */
+    public function errorLevel(?int $level = null): int 
+    {
+        if ($level != null)
+        {
+            $this->errorLevel = $level;
+        }
+        
+        return $this->errorLevel;
+    }
+    
     public function setErrorLevel(int $level): int 
     {
-        return error_reporting($level);
+        return error_reporting($this->errorLevel = $level);
     }
     
     /**
@@ -79,6 +92,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $old = error_reporting($this->errorLevel);
         set_error_handler($this->createHandler());
 
         try
@@ -92,6 +106,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
         }
         
         restore_error_handler();
+        error_reporting($old);
 
         return $response;
     }
