@@ -15,6 +15,7 @@
         "psr/http-factory": "^1.0.1",
         "bermudaphp/eventor": "^1.0",
         "bermudaphp/config": "^1.0",
+        "bermudaphp/request-handler-factory": "^1.0",
         "filp/whoops": "^2.7.3"
     }
 }
