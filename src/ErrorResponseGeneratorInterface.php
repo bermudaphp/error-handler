@@ -11,5 +11,5 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 interface ErrorResponseGeneratorInterface
 {
-    public function generate(\Throwable $e, ?ServerRequestInterface $request = null): ResponseInterface;
+    public function generate(\Throwable $e, ServerRequestInterface $request): ResponseInterface;
 }
