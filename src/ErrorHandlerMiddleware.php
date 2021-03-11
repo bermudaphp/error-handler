@@ -2,6 +2,7 @@
 
 namespace Bermuda\ErrorHandler;
 
+use Throwable;
 use Bermuda\Eventor\EventDispatcher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -84,9 +85,9 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
            $response = $handler->handle($request);
         }
 
-        catch (\Throwable $e)
+        catch (Throwable $e)
         {
-            $response = $this->handleException($e);
+            $response = $this->handleException($e, $request);
         }
         
         restore_error_handler();
@@ -99,7 +100,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      * @param Throwable $e
      * @return ResponseInterface
      */                                             
-    public function handleException(Throwable $e): ResponseInterface
+    public function handleException(Throwable $e, ?ServerRequestInterface $request = null): ResponseInterface
     {
         $response = $this->generator->generate($e, $request);
             
