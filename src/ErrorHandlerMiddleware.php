@@ -49,7 +49,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      * @param EventDispatcherInterface $dispatcher
      * @return self
      */
-    public function setDispatcher(?EventDispatcherInterface $dispatcher): self
+    public function setDispatcher(EventDispatcherInterface $dispatcher): self
     {
         if (!$this->provider)
         {
