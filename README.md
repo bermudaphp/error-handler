@@ -14,3 +14,14 @@ $priority = 1;
 
 $errorHandler->listen($errorListenerInterfaceInstance, $priority);
 ````
+# ErrorEvent
+```php
+$request = $event->request();
+$exception = $event->getThrowable();
+$response = $event->response();
+
+... modify response
+
+$event->response($modifiedResponse);
+
+````
