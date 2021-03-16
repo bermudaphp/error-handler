@@ -46,10 +46,16 @@ final class ErrorEvent
     }
 
     /**
+     * @param ServerRequestInterface|null $request
      * @return ServerRequestInterface
      */
-    public function getRequest(): ServerRequestInterface
+    public function request(?ServerRequestInterface $request = null): ServerRequestInterface
     {
+        if ($request != null)
+        {
+            $this->request = $request;
+        }
+        
         return $this->request;
     }
 }
