@@ -11,7 +11,7 @@ use \Throwable;
 interface ErrorHandlerInterface
 {
     /**
-     * @param ErrorEvent $event
+     * @param Throwable $e
      */
     public function handleException(Throwable $e, ?array $context = null): void ;
 }
