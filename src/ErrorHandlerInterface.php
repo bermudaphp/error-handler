@@ -13,5 +13,5 @@ interface ErrorHandlerInterface
     /**
      * @param Throwable $e
      */
-    public function handleException(Throwable $e, ?array $context = null): void ;
+    public function handleException(Throwable $e): void ;
 }
