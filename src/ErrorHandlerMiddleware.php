@@ -5,6 +5,7 @@ namespace Bermuda\ErrorHandler;
 use Throwable;
 use Bermuda\Eventor\EventDispatcher;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -16,18 +17,29 @@ use Bermuda\RequestHandlerRunner\ServerRequestFactory;
  * Class ErrorHandlerMiddleware
  * @package Bermuda\ErrorHandler
  */
-final class ErrorHandlerMiddleware implements MiddlewareInterface
+final class ErrorHandlerMiddleware implements MiddlewareInterface, ErrorHandlerInterface, ErrorRendererInterface
 {
     private int $errorLevel;
+    private ErrorRendererInterface $renderer;
+    private ResponseFactoryInterface $factory;
     private EventDispatcherInterface $dispatcher;
     private ?PrioritizedProvider $provider = null;
-    private ErrorResponseGeneratorInterface $generator;
-    
-    public function __construct(ErrorResponseGeneratorInterface $generator, EventDispatcherInterface $dispatcher = null)
+   
+    public function __construct(ResponseFactoryInterface $factory, 
+        ErrorRendererInterface $renderer = null, EventDispatcherInterface $dispatcher = null, 
+        int $errorLevel = E_ALL
+    )
     {
-        $this->errorLevel(E_ALL);
-        $this->setGenerator($generator);
-        $this->setDispatcher($dispatcher ?? new EventDispatcher());
+        $this->setResponseFactory($factory)
+            ->setRenderer($renderer ?? new Renderer\WhoopsRenderer())
+            ->setDispatcher($dispatcher ?? new EventDispatcher())
+            ->errorLevel($errorLevel);
+    }
+    
+    public function setResponseFactory(ResponseFactoryInterface $factory): self 
+    {
+        $this->factory = $factory;
+        return $this;
     }
     
     /**
@@ -37,12 +49,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      */
     public function errorLevel(?int $level = null): int 
     {
-        if ($level != null)
-        {
-            $this->errorLevel = $level;
-        }
-        
-        return $this->errorLevel;
+        return $level != null ? $this->errorLevel = $level : $this->errorLevel;
     }
     
     /**
@@ -65,9 +72,9 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
      * @param ErrorResponseGenerator $generator
      * @return self
      */
-    public function setGenerator(ErrorResponseGeneratorInterface $generator): self
+    public function setRenderer(ErrorRendererInterface $renderer): self
     {
-        $this->generator = $generator;
+        $this->renderer = $renderer;
         return $this;
     }
     
@@ -90,14 +97,17 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
         $old = error_reporting($this->errorLevel);
         set_error_handler($this->createHandler());
 
-        try
-        {
+        try {
            $response = $handler->handle($request);
         }
 
         catch (Throwable $e)
         {
-            $response = $this->handleException($e, $request);
+            $e = ServerRequestException::decorate($e, $request);
+            $content = $this->renderException($e);
+            
+            ($response = $this->factory->createResponse($e->getCode()))
+                ->getBody()->write($content);
         }
         
         restore_error_handler();
@@ -107,14 +117,20 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
     }
     
     /**
-     * Handle exception and fire ErrorEvent
-     * @param Throwable $e
-     * @return ResponseInterface
+     * @inheritDoc
      */                                             
-    public function handleException(Throwable $e, ?ServerRequestInterface $request = null): ResponseInterface
+    public function handleException(Throwable $e): void
     {
         $response = $this->generator->generate($e, $request = $request ?? ServerRequestFactory::fromGlobals());
         return $response = $this->dispatcher->dispatch(new ErrorEvent($e, $request, $response))->response();
+    }
+    
+    /**
+     * @inheritDoc
+     */                                         
+    public function renderException(Throwable $e): string
+    {
+        return $this->render->render($e);
     }
     
     private function createHandler(): callable
