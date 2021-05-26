@@ -58,11 +58,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface, ErrorHandlerI
      */
     public function setDispatcher(EventDispatcherInterface $dispatcher): self
     {
-        if (!$this->provider)
-        {
-            $this->provider = new PrioritizedProvider();
-        }
-        
+        $this->provider ?: $this->provider = new PrioritizedProvider();
         $this->dispatcher = $dispatcher->attach($this->provider);
         
         return $this;
