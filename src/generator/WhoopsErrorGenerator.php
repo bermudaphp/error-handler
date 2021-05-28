@@ -9,9 +9,8 @@ use Whoops\Handler\PrettyPageHandler;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Bermuda\ErrorHandler\RequestHandlingException;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
-
-use function Bermuda\ErrorHandler\get_status_code_from_throwable;
 
 /**
  * Class WhoopsErrorGenerator
@@ -28,28 +27,21 @@ class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
     }
 
     /**
-     * @param \Throwable $e
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
+     * @inheritDoc
      */
-    public function generate(\Throwable $e, ServerRequestInterface $request): ResponseInterface
+    public function generate(RequestHandlingException $e): ResponseInterface
     {
-        $response = $this->factory->createResponse(get_status_code_from_throwable($e));
-        $response->getBody()->write($this->handleException($e, $request));
+        ($response = $this->factory->createResponse($e))
+            ->getBody()->write($this->renderException($e));
 
         return $response;
     }
 
-    /**
-     * @param \Throwable $e
-     * @param ServerRequestInterface $request
-     * @return string
-     */
-    protected function handleException(\Throwable $e, ServerRequestInterface $request): string
+    protected function renderException(RequestHandlingException $e): string
     {
         foreach ($this->whoops->getHandlers() as $handler)
         {
-            $this->addRequestInformation($handler, $request);
+            $this->addRequestInformation($handler, $e->getServerRequest());
         }
 
         return $this->whoops->handleException($e);
