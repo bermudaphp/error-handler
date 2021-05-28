@@ -5,13 +5,13 @@ namespace Bermuda\ErrorHandler;
 use Throwable;
 use Bermuda\Eventor\EventDispatcher;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 use Bermuda\RequestHandlerRunner\ServerRequestFactory;
+use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 
 /**
  * Class ErrorHandlerMiddleware
@@ -20,25 +20,32 @@ use Bermuda\RequestHandlerRunner\ServerRequestFactory;
 final class ErrorHandlerMiddleware implements MiddlewareInterface, ErrorHandlerInterface, ErrorRendererInterface
 {
     private int $errorLevel;
+    private EmitterInterface $emitter;
     private ErrorRendererInterface $renderer;
-    private ResponseFactoryInterface $factory;
     private EventDispatcherInterface $dispatcher;
     private ?PrioritizedProvider $provider = null;
+    private ErrorResponseGeneratorInterface $generator;
    
-    public function __construct(ResponseFactoryInterface $factory, 
+    public function __construct(ErrorResponseGeneratorInterface $generator, EmitterInterface $emitter, 
         ErrorRendererInterface $renderer = null, EventDispatcherInterface $dispatcher = null, 
         int $errorLevel = E_ALL
     )
     {
-        $this->setResponseFactory($factory)
+        $this->setResponseGenerator($generator)->setEmitter($emitter)
             ->setRenderer($renderer ?? new Renderer\WhoopsRenderer())
             ->setDispatcher($dispatcher ?? new EventDispatcher())
             ->errorLevel($errorLevel);
     }
     
-    public function setResponseFactory(ResponseFactoryInterface $factory): self 
+    public function setResponseGenerator(ErrorResponseGeneratorInterface $generator): self 
     {
-        $this->factory = $factory;
+        $this->generator = $generator;
+        return $this;
+    }
+    
+    public function setEmitter(EmitterInterface $emitter): self 
+    {
+        $this->emitter = $emitter;
         return $this;
     }
     
@@ -84,26 +91,22 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface, ErrorHandlerI
     }
     
     /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
+     * @inheritDoc
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $old = error_reporting($this->errorLevel);
         set_error_handler($this->createHandler());
 
-        try {
-           $response = $handler->handle($request);
+        try
+        {
+            $response = $handler->handle($request);
         }
 
         catch (Throwable $e)
         {
-            $e = ServerRequestException::decorate($e, $request);
-            $content = $this->renderException($e);
-            
-            ($response = $this->factory->createResponse($e->getCode()))
-                ->getBody()->write($content);
+            $e = RequestHandlingException::wrap($e, $request);
+            $response = $this->generateResponse($e);
         }
         
         restore_error_handler();
@@ -117,8 +120,24 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface, ErrorHandlerI
      */                                             
     public function handleException(Throwable $e): void
     {
-        $response = $this->generator->generate($e, $request = $request ?? ServerRequestFactory::fromGlobals());
-        return $response = $this->dispatcher->dispatch(new ErrorEvent($e, $request, $response))->response();
+        if ($e instanceof RequestHandlingException)
+        {
+            $response = $this->generator->generate($e);
+            $response = $this->dispatcher(new HttpErrorEvent($e, $request, $response))->response();
+            
+            $this->emitter->emit($response);
+            return;
+        }
+        
+        $content = $this->renderException($e);
+        $this->dispatcher->dispatch(new ErrorEvent($e));
+        
+        die($content);
+    }
+    
+    private function generateResponse(RequestHandlingException $e): ResponseInterface
+    {
+        return $this->dispatcher(new HttpErrorEvent($e, $request, $this->generator->generate($e)))->response();
     }
     
     /**
