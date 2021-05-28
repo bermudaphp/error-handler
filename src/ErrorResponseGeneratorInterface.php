@@ -3,7 +3,6 @@
 namespace Bermuda\ErrorHandler;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Interface ErrorResponseGeneratorInterface
@@ -11,5 +10,5 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 interface ErrorResponseGeneratorInterface
 {
-    public function generate(\Throwable $e, ServerRequestInterface $request): ResponseInterface;
+    public function generate(RequestHandlingException $e): ResponseInterface;
 }
