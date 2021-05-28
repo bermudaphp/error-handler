@@ -14,7 +14,7 @@ $priority = 1;
 
 $errorHandler->listen($errorListenerInterfaceInstance, $priority);
 ````
-# ErrorEvent
+# HttpErrorEvent
 ```php
 $request = $event->request();
 $exception = $event->getThrowable();
