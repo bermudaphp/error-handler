@@ -45,8 +45,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
 
         catch (Throwable $e)
         {
-            $e = RequestHandlingException::wrap($e, $request);
-            $response = $this->generateResponse($e);
+            $response = $this->generateResponse(new RequestHandlingException($e, $request));
         }
         
         restore_error_handler();
