@@ -12,7 +12,7 @@ use Bermuda\Eventor\Provider\PrioritizedProvider;
 use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 
 /**
- * Class ErrorHandlerMiddleware
+ * Class ErrorHandler
  * @package Bermuda\ErrorHandler
  */
 final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface
