@@ -8,5 +8,5 @@ namespace Bermuda\ErrorHandler;
  */
 function get_status_code_from_throwable(\Throwable $e): int
 {
-    return $e->getCode() >= 400 && $e->getCode() < 600 ? $e->getCode() : 500 ;
+    return RequestHandlingException::getStatusCode($e);
 }
