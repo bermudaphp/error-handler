@@ -9,10 +9,10 @@ use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 
 /**
- * Trait ErrorHandler
+ * Trait ErrorHandlerTrait
  * @package Bermuda\ErrorHandler
  */
-trait ErrorHandler
+trait ErrorHandlerTrait
 {
     private int $errorLevel;
     private EventDispatcherInterface $dispatcher;
