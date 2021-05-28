@@ -5,10 +5,10 @@ namespace Bermuda\ErrorHandler;
 use \Throwable;
 
 /**
- * Interface ErrorHandlerInterface
+ * Interface ErrorRendererInterface
  * @package Bermuda\ErrorHandler
  */
-interface ErrorHandlerInterface
+interface ErrorRendererInterface
 {
     /**
      * @param Throwable $e
