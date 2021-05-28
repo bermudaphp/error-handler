@@ -13,10 +13,10 @@ use Psr\Http\Message\ServerRequestInterface;
 final class ErrorEvent
 {
     private Throwable $e;
-    private ?ResponseInterface $response = null;
-    private ?ServerRequestInterface $request = null;
+    private ResponseInterface $response;
+    private ServerRequestInterface $request;
 
-    public function __construct(Throwable $e, ?ServerRequestInterface $request = null, ?ResponseInterface $response = null)
+    public function __construct(Throwable $e, ServerRequestInterface $request, ResponseInterface $response)
     {
         $this->e = $e;
         $this->request = $request;
@@ -33,9 +33,9 @@ final class ErrorEvent
 
     /**
      * @param ResponseInterface|null $response
-     * @return ResponseInterface|null
+     * @return ResponseInterface
      */
-    public function response(?ResponseInterface $response = null):? ResponseInterface
+    public function response(?ResponseInterface $response = null): ResponseInterface
     {
         return $response != null ? $this->response = $response : $this->response;
     }
@@ -44,7 +44,7 @@ final class ErrorEvent
      * @param ServerRequestInterface|null $request
      * @return ServerRequestInterface|null
      */
-    public function request(?ServerRequestInterface $request = null):? ServerRequestInterface
+    public function request(ServerRequestInterface $request = null): ServerRequestInterface
     {
         return $request != null ? $this->request = $request : $this->request;
     }
