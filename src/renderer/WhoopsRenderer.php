@@ -22,6 +22,7 @@ final class WhoopsRenderer implements ErrorHandlerInterface
   
     public function setWhoops(RunInterface $whoops): self
     {
+        $this->whoops = $whoops;
         return $this;
     }
   
