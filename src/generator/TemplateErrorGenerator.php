@@ -5,6 +5,7 @@ namespace Bermuda\ErrorHandler\Generator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Bermuda\ErrorHandler\RequestHandlingException;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 
 /**
