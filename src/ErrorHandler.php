@@ -56,7 +56,10 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
         if ($e instanceof RequestHandlingException)
         {
             $response = $this->generator->generate($e);
-            $response = $this->dispatcher(new HttpErrorEvent($e, $request, $response))->response();
+            $response = $this->dispatcher->dispatch(
+                new HttpErrorEvent($e, $e->getServerRequest(), $response)
+            )
+                ->response();
             
             $this->emitter->emit($response);
             exit;
@@ -65,7 +68,7 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
         $content = $this->renderException($e);
         $this->dispatcher->dispatch(new ErrorEvent($e));
         
-        exit($content);
+        die($content);
     }
     
     /**
