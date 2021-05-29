@@ -33,7 +33,7 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
     {
         ($response = $this->factory->createResponse($e->getCode())
             ->withHeader('Content-Type', 'text/html'))
-            ->getBody()->write(($this->templateRenderer)($code))
+            ->getBody()->write(($this->templateRenderer)($e->getCode()))
 
         return $response;
     }
