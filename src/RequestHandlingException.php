@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Class RequestHandlingException
  * @package Bermuda\ErrorHandler
  */
-final class RequestHandlingException extends RuntimeException
+final class RequestHandlingException extends \RuntimeException
 {
     private ServerRequestInterface $serverRequest;
     
