@@ -44,6 +44,11 @@ final class WhoopsRenderer implements ErrorRendererInterface
         return new self(self::getWhoops()->pushHandler(new JsonResponseHandler()));
     }
 
+    public static function chooseForSapi(): self
+    {
+        return new self(self::getWhoops()->pushHandler(new PlainTextHandler));
+    }
+
     private static function getWhoops(): Run
     {
         $whoops = new Run();
