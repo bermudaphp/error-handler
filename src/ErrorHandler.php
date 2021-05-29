@@ -27,7 +27,7 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
     )
     {
         $this->setResponseGenerator($generator)->setEmitter($emitter)
-            ->setRenderer($renderer ?? new Renderer\WhoopsRenderer())
+            ->setRenderer($renderer ?? Renderer\WhoopsRenderer::chooseForSapi())
             ->setDispatcher($dispatcher ?? new EventDispatcher())
             ->errorLevel($errorLevel);
     }
