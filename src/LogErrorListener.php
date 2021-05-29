@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
  * Class LogErrorListener
  * @package Bermuda\ErrorHandler
  */
-class LogErrorListener implements ErrorListener
+final class LogErrorListener implements ErrorListenerInterface
 {
     private LoggerInterface $logger;
 
