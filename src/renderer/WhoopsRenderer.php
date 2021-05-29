@@ -46,7 +46,8 @@ final class WhoopsRenderer implements ErrorRendererInterface
 
     public static function chooseForSapi(): self
     {
-        return new self(self::getWhoops()->pushHandler(new PlainTextHandler));
+        return PHP_SAPI == 'cli' || PHP_SAPI == 'cli-server' ? 
+            self::plainTextRendering() : self::prettyPageRendering();
     }
 
     private static function getWhoops(): Run
