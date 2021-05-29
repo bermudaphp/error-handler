@@ -3,6 +3,7 @@
 namespace Bermuda\ErrorHandler\Renderer;
 
 use Throwable;
+use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 use Whoops\RunInterface;
@@ -15,11 +16,11 @@ use Bermuda\ErrorHandler\ErrorRendererInterface;
  */
 final class WhoopsRenderer implements ErrorRendererInterface
 {
-    private ?RunInterface $whoops = null;
+    private RunInterface $whoops;
   
-    public function __construct(RunInterface $whoops = null)
+    public function __construct(RunInterface $whoops)
     {
-        $this->whoops = $whoops ?? $this->getWhoops();
+        $this->whoops = $whoops;
     }
   
     public function setWhoops(RunInterface $whoops): self
@@ -27,22 +28,30 @@ final class WhoopsRenderer implements ErrorRendererInterface
         $this->whoops = $whoops;
         return $this;
     }
-  
-    public function getWhoops(): RunInterface
+
+    public static function plainTextRendering(): self
     {
-        if ($this->whoops == null)
-        {
-            $whoops = new Run();
-            $whoops->pushHandler(PHP_SAPI == 'cli-server' || PHP_SAPI == 'cli'
-                ? new PlainTextHandler : new PrettyPageHandler
-            );
-            $whoops->allowQuit(false);
-            $whoops->writeToOutput(false);
-          
-            return $whoops;
-        }
-      
-        return $this->whoops;
+        return new self(self::getWhoops()->pushHandler(new PlainTextHandler));
+    }
+
+    public static function prettyPageRendering(): self
+    {
+        return new self(self::getWhoops()->pushHandler(new PrettyPageHandler()));
+    }
+
+    public static function jsonRendering(): self
+    {
+        return new self(self::getWhoops()->pushHandler(new JsonResponseHandler()));
+    }
+
+    private static function getWhoops(): Run
+    {
+        $whoops = new Run();
+
+        $whoops->allowQuit(false);
+        $whoops->writeToOutput(false);
+
+        return $whoops;
     }
   
     /**
