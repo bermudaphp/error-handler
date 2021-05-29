@@ -73,6 +73,6 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
      */                                         
     public function renderException(Throwable $e): string
     {
-        return $this->render->render($e);
+        return $this->renderer->renderException($e);
     }
 }
