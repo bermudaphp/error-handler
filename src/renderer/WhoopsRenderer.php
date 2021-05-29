@@ -3,6 +3,7 @@
 namespace Bermuda\ErrorHandler\Renderer;
 
 use Throwable;
+use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 use Whoops\RunInterface;
 use Whoops\Handler\PlainTextHandler;
@@ -32,7 +33,9 @@ final class WhoopsRenderer implements ErrorRendererInterface
         if ($this->whoops == null)
         {
             $whoops = new Run();
-            $whoops->pushHandler(new PlainTextHandler);
+            $whoops->pushHandler(PHP_SAPI == 'cli-server' || PHP_SAPI == 'cli'
+                ? new PlainTextHandler : new PrettyPageHandler
+            );
             $whoops->allowQuit(false);
             $whoops->writeToOutput(false);
           
