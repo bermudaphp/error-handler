@@ -65,7 +65,7 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
         $content = $this->renderException($e);
         $this->dispatcher->dispatch(new ErrorEvent($e));
         
-        die($content);
+        exit($content);
     }
     
     /**
