@@ -57,12 +57,12 @@ trait ErrorHandlerTrait
     }
 
     /**
-     * @param ErrorListenerInterface $listener
+     * @param ErrorListenerInterface|HttpErrorListenerInterface $listener
      * @return void
      */
     public function listen(ErrorListenerInterface $listener, int $priority = 0): void
     {
-        $this->provider->listen($listener, $priority);
+        $this->provider->listen(ErrorEvent::class, $listener, $priority);
     }
     
     private function generateResponse(RequestHandlingException $e): ResponseInterface
