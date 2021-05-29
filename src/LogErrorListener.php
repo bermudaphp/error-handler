@@ -2,19 +2,22 @@
 
 namespace Bermuda\ErrorHandler;
 
+use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
 use Psr\Log\LoggerInterface;
 
 /**
  * Class LogErrorListener
  * @package Bermuda\ErrorHandler
  */
-final class LogErrorListener implements ErrorListenerInterface
+class LogErrorListener implements ErrorListenerInterface
 {
     private LoggerInterface $logger;
+    private ErrorRendererInterface $renderer;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, ErrorRendererInterface $renderer = null)
     {
         $this->logger = $logger;
+        $this->renderer = $renderer ?? WhoopsRenderer::plainTextRendering();
     }
 
     /**
@@ -22,20 +25,6 @@ final class LogErrorListener implements ErrorListenerInterface
      */
     public function __invoke(ErrorEvent $event): void
     {
-        if ($event instanceof HttpErrorEvent)
-        {
-            $this->logger->error(
-                sprintf('%d [%s] %s: %s', 
-                        $event->getResponse()->getStatusCode(),
-                        $req = $event->getRequest()->getMethod(), 
-                        (string) $req->getUri(), $event->getThrowable()
-                            ->getMessage()
-                       )
-            );
-            
-            return;
-        }
-        
-        $this->logger->error($event->getThrowable()->getMessage());
+        $this->logger->error($this->renderer->renderException($event->getThrowable()));
     }
 }
