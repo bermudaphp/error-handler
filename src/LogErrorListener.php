@@ -22,6 +22,20 @@ class LogErrorListener implements ErrorListener
      */
     public function __invoke(ErrorEvent $event): void
     {
-        $this->logger->error(sprintf('%d [%s] %s: %s', $event->getResponse()->getStatusCode(), $req = $event->getRequest()->getMethod(), (string) $req->getUri(), $event->getThrowable()->getMessage()));
+        if ($event instanceof HttpErrorEvent)
+        {
+            $this->logger->error(
+                sprintf('%d [%s] %s: %s', 
+                        $event->getResponse()->getStatusCode(),
+                        $req = $event->getRequest()->getMethod(), 
+                        (string) $req->getUri(), $event->getThrowable()
+                            ->getMessage()
+                       )
+            );
+            
+            return;
+        }
+        
+        $this->logger->error($event->getThrowable()->getMessage());
     }
 }
