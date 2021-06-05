@@ -2,8 +2,8 @@
 
 namespace Bermuda\ErrorHandler;
 
-use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
 use Psr\Log\LoggerInterface;
+use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
 
 /**
  * Class LogErrorListener
