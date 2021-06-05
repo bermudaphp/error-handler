@@ -15,11 +15,10 @@ final class HttpErrorEvent extends ErrorEvent
     private ResponseInterface $response;
     private ServerRequestInterface $request;
 
-    public function __construct(Throwable $e, ServerRequestInterface $request, ResponseInterface $response)
+    public function __construct(HttpException $e, ResponseInterface $response)
     {
-        parent::__construct($e);
-        $this->request = $request;
-        $this->response = $response;
+        $this->request = $e->getServerRequest();
+        parent::__construct($e); $this->response = $response;
     }
     
     /**
@@ -38,5 +37,13 @@ final class HttpErrorEvent extends ErrorEvent
     public function request(ServerRequestInterface $request = null): ServerRequestInterface
     {
         return $request != null ? $this->request = $request : $this->request;
+    }
+    
+    /**
+     * @return HttpException
+     */
+    public function getThrowable(): HttpException
+    {
+        return $this->e;
     }
 }
