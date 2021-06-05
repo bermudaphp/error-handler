@@ -11,9 +11,10 @@ use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
  */
 final class LogErrorListener implements ErrorListenerInterface
 {
+    private array $except = [];
+    
     private LoggerInterface $logger;
     private ErrorRendererInterface $renderer;
-    private array $except = [];
 
     public function __construct(LoggerInterface $logger, ErrorRendererInterface $renderer = null)
     {
