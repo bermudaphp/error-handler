@@ -10,5 +10,5 @@ use Psr\Http\Message\ResponseInterface;
  */
 interface ErrorResponseGeneratorInterface
 {
-    public function generate(RequestHandlingException $e): ResponseInterface;
+    public function generate(HttpException $e): ResponseInterface;
 }
