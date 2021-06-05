@@ -53,7 +53,7 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
      */                                             
     public function handleException(Throwable $e): void
     {
-        if ($e instanceof RequestHandlingException)
+        if ($e instanceof HttpException)
         {
             $response = $this->generator->generate($e);
             $response = $this->dispatcher->dispatch(
