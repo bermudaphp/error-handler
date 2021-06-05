@@ -5,10 +5,10 @@ namespace Bermuda\ErrorHandler;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class RequestHandlingException
+ * Class HttpException
  * @package Bermuda\ErrorHandler
  */
-final class RequestHandlingException extends \RuntimeException
+final class HttpException extends \RuntimeException
 {
     private ServerRequestInterface $serverRequest;
     
