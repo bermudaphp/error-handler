@@ -2,6 +2,7 @@
 
 namespace Bermuda\ErrorHandler\Generator;
 
+use Bermuda\ErrorHandler\HttpException;
 use Whoops\Run;
 use Whoops\RunInterface;
 use Whoops\Handler\HandlerInterface;
@@ -29,7 +30,7 @@ class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function generate(RequestHandlingException $e): ResponseInterface
+    public function generate(HttpException $e): ResponseInterface
     {
         ($response = $this->factory->createResponse($e->getCode()))
             ->getBody()->write($this->renderException($e));
@@ -37,7 +38,7 @@ class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
         return $response;
     }
 
-    protected function renderException(RequestHandlingException $e): string
+    protected function renderException(HttpException $e): string
     {
         foreach ($this->whoops->getHandlers() as $handler)
         {
