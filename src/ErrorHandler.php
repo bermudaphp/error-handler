@@ -57,7 +57,7 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
         {
             $response = $this->generator->generate($e);
             $response = $this->dispatcher->dispatch(
-                new HttpErrorEvent($e, $e->getServerRequest(), $response)
+                new HttpErrorEvent($e, $response)
             )
                 ->response();
             
