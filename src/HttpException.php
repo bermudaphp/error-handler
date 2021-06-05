@@ -16,7 +16,6 @@ final class HttpException extends \RuntimeException
     {
         $this->serverRequest = $request;
         parent::__construct($e->getMessage(), $this->getStatusCode($e), $e);
-        $this->file = $e->getFile(); $this->line = $e->getLine();
     }
     
     public function getServerRequest(): ServerRequestInterface
