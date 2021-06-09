@@ -10,7 +10,7 @@ use Throwable;
  */
 class ErrorEvent
 {
-    private Throwable $e;
+    protected Throwable $e;
    
     public function __construct(Throwable $e)
     {
