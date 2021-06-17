@@ -43,7 +43,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
 
         catch (Throwable $e)
         {
-            $response = $this->generateResponse(new RequestHandlingException($e, $request));
+            $response = $this->generateResponse(new HttpException($e, $request));
         }
         
         restore_error_handler();
