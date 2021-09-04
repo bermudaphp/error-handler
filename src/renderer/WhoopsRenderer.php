@@ -10,10 +10,6 @@ use Whoops\RunInterface;
 use Whoops\Handler\PlainTextHandler;
 use Bermuda\ErrorHandler\ErrorRendererInterface;
 
-/**
- * Class WhoopsRenderer
- * @package Bermuda\ErrorHandler\Renderer
- */
 final class WhoopsRenderer implements ErrorRendererInterface
 {
     private RunInterface $whoops;
