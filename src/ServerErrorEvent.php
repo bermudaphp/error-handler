@@ -6,16 +6,12 @@ use Throwable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * Class HttpErrorEvent
- * @package Bermuda\ErrorHandler
- */
-final class HttpErrorEvent extends ErrorEvent
+final class ServerErrorEvent extends ErrorEvent
 {
     private ResponseInterface $response;
     private ServerRequestInterface $request;
 
-    public function __construct(HttpException $e, ResponseInterface $response)
+    public function __construct(ServerException $e, ResponseInterface $response)
     {
         $this->request = $e->getServerRequest();
         parent::__construct($e); $this->response = $response;
@@ -40,9 +36,9 @@ final class HttpErrorEvent extends ErrorEvent
     }
     
     /**
-     * @return HttpException
+     * @return ServerException
      */
-    public function getThrowable(): HttpException
+    public function getThrowable(): ServerException
     {
         return $this->e;
     }
