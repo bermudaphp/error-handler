@@ -2,12 +2,8 @@
 
 namespace Bermuda\ErrorHandler;
 
-use \Throwable;
+use Throwable;
 
-/**
- * Interface ErrorHandlerInterface
- * @package Bermuda\ErrorHandler
- */
 interface ErrorHandlerInterface
 {
     /**
