@@ -65,7 +65,7 @@ trait ErrorHandlerTrait
         $this->provider->listen(ErrorEvent::class, $listener, $priority);
     }
     
-    private function generateResponse(RequestHandlingException $e): ResponseInterface
+    private function generateResponse(HttpException $e): ResponseInterface
     {
         return $this->dispatcher(new HttpErrorEvent($e, $request, $this->generator->generate($e)))->response();
     }
