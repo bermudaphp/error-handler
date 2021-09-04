@@ -11,10 +11,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 
-/**
- * Class ErrorHandlerMiddleware
- * @package Bermuda\ErrorHandler
- */
 final class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     use ErrorHandlerTrait;
@@ -43,7 +39,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
 
         catch (Throwable $e)
         {
-            $response = $this->generateResponse(new HttpException($e, $request));
+            $response = $this->generateResponse(new ServerException($e, $request));
         }
         
         restore_error_handler();
