@@ -5,10 +5,6 @@ namespace Bermuda\ErrorHandler;
 use Psr\Log\LoggerInterface;
 use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
 
-/**
- * Class LogErrorListener
- * @package Bermuda\ErrorHandler
- */
 final class LogErrorListener implements ErrorListenerInterface
 {
     private array $except = [];
@@ -41,7 +37,7 @@ final class LogErrorListener implements ErrorListenerInterface
 
     private function getExceptionClass(ErrorEvent $event): string
     {
-        return get_class($event->getThrowable() instanceof HttpException ?
+        return get_class($event->getThrowable() instanceof ServerException ?
             $event->getThrowable()->getPrevious() : $event->getThrowable()
         );
     }
