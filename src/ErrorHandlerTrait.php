@@ -53,7 +53,7 @@ trait ErrorHandlerTrait
     }
 
     /**
-     * @param ErrorListenerInterface|HttpErrorListenerInterface $listener
+     * @param ErrorListenerInterface|ServerErrorListenerInterface $listener
      * @return void
      */
     public function listen(ErrorListenerInterface $listener, int $priority = 0): void
@@ -63,6 +63,6 @@ trait ErrorHandlerTrait
     
     private function generateResponse(ServerException $e): ResponseInterface
     {
-        return $this->dispatcher(new ServerErrorEvent($e, $request, $this->generator->generate($e)))->response();
+        return $this->dispatcher(new ServerErrorEvent($e, $this->generator->generate($e)))->response();
     }
 }
