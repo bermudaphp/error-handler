@@ -8,10 +8,6 @@ use Psr\Http\Message\ResponseInterface;
 use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 
-/**
- * Trait ErrorHandlerTrait
- * @package Bermuda\ErrorHandler
- */
 trait ErrorHandlerTrait
 {
     private int $errorLevel;
@@ -65,8 +61,8 @@ trait ErrorHandlerTrait
         $this->provider->listen(ErrorEvent::class, $listener, $priority);
     }
     
-    private function generateResponse(HttpException $e): ResponseInterface
+    private function generateResponse(ServerException $e): ResponseInterface
     {
-        return $this->dispatcher(new HttpErrorEvent($e, $request, $this->generator->generate($e)))->response();
+        return $this->dispatcher(new ServerErrorEvent($e, $request, $this->generator->generate($e)))->response();
     }
 }
