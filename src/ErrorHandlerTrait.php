@@ -53,7 +53,7 @@ trait ErrorHandlerTrait
     }
 
     /**
-     * @param ErrorListenerInterface|ServerErrorListenerInterface $listener
+     * @param ErrorListenerInterface $listener
      * @return void
      */
     public function listen(ErrorListenerInterface $listener, int $priority = 0): void
