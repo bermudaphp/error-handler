@@ -11,10 +11,6 @@ use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 
-/**
- * Class ErrorHandler
- * @package Bermuda\ErrorHandler
- */
 final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface
 {
     use ErrorHandlerTrait;
@@ -53,11 +49,11 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
      */                                             
     public function handleException(Throwable $e): void
     {
-        if ($e instanceof HttpException)
+        if ($e instanceof ServerException)
         {
             $response = $this->generator->generate($e);
             $response = $this->dispatcher->dispatch(
-                new HttpErrorEvent($e, $response)
+                new ServerErrorEvent($e, $response)
             )
                 ->response();
             
@@ -68,7 +64,7 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
         $content = $this->renderException($e);
         $this->dispatcher->dispatch(new ErrorEvent($e));
         
-        die($content);
+        exit($content);
     }
     
     /**
