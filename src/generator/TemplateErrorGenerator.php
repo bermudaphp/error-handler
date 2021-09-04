@@ -9,10 +9,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Bermuda\ErrorHandler\RequestHandlingException;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 
-/**
- * Class TemplateErrorGenerator
- * @package Bermuda\ErrorHandler\Generator
- */
 final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
 {
     /**
@@ -30,7 +26,7 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function generate(HttpException $e): ResponseInterface
+    public function generate(ServerException $e): ResponseInterface
     {
         ($response = $this->factory->createResponse($e->getCode())
             ->withHeader('Content-Type', 'text/html'))
