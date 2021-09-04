@@ -6,7 +6,7 @@ use Throwable;
 use RuntimeException;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class ServerRequestException extends RuntimeException
+final class ServerException extends RuntimeException
 {
     private ServerRequestInterface $serverRequest;
     
