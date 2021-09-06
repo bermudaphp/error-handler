@@ -23,6 +23,6 @@ final class ServerException extends RuntimeException
     
     public static function getStatusCode(Throwable $e): int
     {
-        return Bermuda\ErrorHandler\get_error_code($e->getCode());
+        return get_error_code($e->getCode());
     }
 }
