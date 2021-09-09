@@ -29,7 +29,7 @@ class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
     public function generate(ServerException $e): ResponseInterface
     {
         ($response = $this->factory->createResponse($e->getCode()))
-            ->getBody()->write($this->renderException($e));
+            ->getBody()->write($this->renderException($e->getPrevious()));
 
         return $response;
     }
