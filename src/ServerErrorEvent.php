@@ -17,6 +17,11 @@ final class ServerErrorEvent extends ErrorEvent
         $this->response = $response;
     }
     
+    public static function makeFrom(ServerException $e, ResponseInterface $response): self
+    {
+        return new self($e->getPrevious(), $e->getServerRequest(), $response);
+    }
+    
     /**
      * @param ResponseInterface|null $response
      * @return ResponseInterface
