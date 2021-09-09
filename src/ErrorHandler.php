@@ -52,11 +52,7 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
         if ($e instanceof ServerException)
         {
             $response = $this->generator->generate($e);
-            $response = $this->dispatcher->dispatch(
-                new ServerErrorEvent($e, $response)
-            )
-                ->response();
-            
+            $response = $this->dispatcher->dispatch(ServerErrorEvent::makeFrom($e, $response))->response();
             $this->emitter->emit($response);
             exit;
         }
