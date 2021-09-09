@@ -4,10 +4,6 @@ namespace Bermuda\ErrorHandler;
 
 use Throwable;
 
-/**
- * Class ErrorEvent
- * @package Bermuda\ErrorHandler
- */
 class ErrorEvent
 {
     protected Throwable $e;
