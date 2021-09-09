@@ -14,7 +14,7 @@ final class ServerErrorEvent extends ErrorEvent
     public function __construct(ServerException $e, ResponseInterface $response)
     {
         $this->request = $e->getServerRequest();
-        parent::__construct($e); $this->response = $response;
+        parent::__construct($e->getPrevious()); $this->response = $response;
     }
     
     /**
@@ -33,13 +33,5 @@ final class ServerErrorEvent extends ErrorEvent
     public function request(ServerRequestInterface $request = null): ServerRequestInterface
     {
         return $request != null ? $this->request = $request : $this->request;
-    }
-    
-    /**
-     * @return ServerException
-     */
-    public function getThrowable(): ServerException
-    {
-        return $this->e;
     }
 }
