@@ -3,18 +3,18 @@
 namespace Bermuda\ErrorHandler;
 
 use Throwable;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 
 final class ServerErrorEvent extends ErrorEvent
 {
     private ResponseInterface $response;
     private ServerRequestInterface $request;
 
-    public function __construct(ServerException $e, ResponseInterface $response)
+    public function __construct(Throwable $e, ServerRequestInterface $request, ResponseInterface $response)
     {
-        $this->request = $e->getServerRequest();
-        parent::__construct($e->getPrevious()); $this->response = $response;
+        parent::__construct($e);
+        $this->request = $request;
+        $this->response = $response;
     }
     
     /**
