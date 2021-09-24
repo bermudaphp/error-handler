@@ -7,6 +7,7 @@ use Bermuda\ErrorHandler\ServerException;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
+use Bermuda\Router\Exception\MethodNotAllowedException;
 
 final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
 {
