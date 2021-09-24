@@ -6,7 +6,6 @@ use Psr\Http\Message\ResponseInterface;
 use Bermuda\ErrorHandler\ServerException;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Bermuda\ErrorHandler\RequestHandlingException;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 
 final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
