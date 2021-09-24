@@ -27,9 +27,12 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
      */
     public function generate(ServerException $e): ResponseInterface
     {
-        ($response = $this->responseFactory->createResponse($e->getCode())
-            ->withHeader('Content-Type', 'text/html'))
+        ($response = $this->responseFactory->createResponse($e->getCode())->withHeader('Content-Type', 'text/html'))
             ->getBody()->write(($this->templateRenderer)($e->getCode()));
+        
+        if ($e->getPrevious() instanceof MethodNotAllowedException) {
+            $response = $response->withHeader('Allow', implode(', ', $e->getPrevious()->getAllowedMethods()));
+        }
 
         return $response;
     }
