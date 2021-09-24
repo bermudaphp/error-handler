@@ -10,17 +10,16 @@ use Psr\Http\Message\ResponseInterface;
 use Bermuda\ErrorHandler\ServerException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Bermuda\ErrorHandler\RequestHandlingException;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 
 class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
 {
     private RunInterface $whoops;
-    private ResponseFactoryInterface $factory;
+    private ResponseFactoryInterface $responseFactory;
 
-    public function __construct(ResponseFactoryInterface $factory, RunInterface $whoops = null)
+    public function __construct(ResponseFactoryInterface $responseFactory, RunInterface $whoops = null)
     {
-        $this->setWhoops($whoops)->factory = $factory;
+        $this->setWhoops($whoops)->responseFactory = $responseFactory;
     }
 
     /**
@@ -28,7 +27,7 @@ class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
      */
     public function generate(ServerException $e): ResponseInterface
     {
-        ($response = $this->factory->createResponse($e->getCode()))
+        ($response = $this->responseFactory->createResponse($e->getCode()))
             ->getBody()->write($this->renderException($e));
 
         return $response;
@@ -36,8 +35,7 @@ class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
 
     protected function renderException(ServerException $e): string
     {
-        foreach ($this->whoops->getHandlers() as $handler)
-        {
+        foreach ($this->whoops->getHandlers() as $handler) {
             $this->addRequestInformation($handler, $e->getServerRequest());
         }
 
@@ -50,12 +48,11 @@ class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
      */
     protected function setWhoops(?RunInterface $whoops): self
     {
-        if (!$whoops)
-        {
+        if (!$whoops) {
+
             $whoops = new Run();
 
-            foreach ($this->getHandlers() as $handler)
-            {
+            foreach ($this->getHandlers() as $handler) {
                 $whoops->pushHandler($handler);
             }
         }
