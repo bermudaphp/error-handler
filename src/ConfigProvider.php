@@ -11,15 +11,12 @@ final class ConfigProvider extends \Bermuda\Config\ConfigProvider
     {
         return [
             ErrorResponseGeneratorInterface::class => ErrorResponseGeneratorFactory::class,
-            ErrorHandlerInterface::class => ErrorHandlerFactory::class
+            ErrorHandlerInterface::class => ErrorHandlerFactory::class,
         ];
     }
     
-    /**
-     * @inheritDoc
-     */
-    protected function getAliases(): array
+    protected function getInvokables(): array
     {
-        return [ErrorRendererInterface::class => ErrorHandlerInterface::class];
+        return [ErrorRendererInterface::class => Renderer\WhoopsErrorRenderer::class];
     }
 }
