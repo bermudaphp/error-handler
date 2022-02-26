@@ -23,7 +23,7 @@ trait ErrorHandlerTrait
      * @param EventDispatcherInterface $dispatcher
      * @return self
      */
-    public function setDispatcher(EventDispatcherInterface $dispatcher): self
+    public function setDispatcher(EventDispatcherInterface $dispatcher): EventDispatcherAwareInterface
     {
         if ($this->provider == null) {
             $this->provider = new PrioritizedProvider;
