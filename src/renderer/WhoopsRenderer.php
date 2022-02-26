@@ -14,7 +14,6 @@ use Bermuda\ErrorHandler\ErrorRendererInterface;
 final class WhoopsRenderer implements ErrorRendererInterface
 {
     private RunInterface $whoops;
-    private ?ServerRequestInterface $request = null;
   
     public function __construct(RunInterface $whoops = new Run)
     {
