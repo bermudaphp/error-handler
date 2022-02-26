@@ -19,5 +19,5 @@ function get_error_code(int $code): int
 
 function createEvent(Throwable $e): ErrorEvent|ServerErrorEvent
 {
-    return $e instanceof ServerException ? new ServerErrorEvent($e) : new ErrorEvent($e);
+    return $e instanceof ServerException ? new ServerErrorEvent($e->getPrevious(), $e->getServerRequest()) : new ErrorEvent($e);
 }
