@@ -4,8 +4,6 @@ namespace Bermuda\ErrorHandler;
 
 interface ErrorListenerInterface
 {
-    /**
-     * @param ErrorEvent $event
-     */
+    public function getPriority(): int ;
     public function handleEvent(ErrorEvent $event): void ;
 }
