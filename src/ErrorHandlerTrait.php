@@ -15,9 +15,9 @@ trait ErrorHandlerTrait
     private ?PrioritizedListenerProviderInterface $provider = null;
    
     public function __construct(private ErrorResponseGeneratorInterface $generator, private EmitterInterface $emitter
-        EventDispatcherInterface $dispatcher = null
+        EventDispatcherInterface $dispatcher = new EventDispatcher
     ){
-        $this->setDispatcher($dispatcher ?? new EventDispatcher);
+        $this->setDispatcher($dispatcher);
     }
     
     /**
@@ -38,9 +38,9 @@ trait ErrorHandlerTrait
      * @param ErrorListenerInterface $listener
      * @return static
      */
-    public function on(ErrorListenerInterface $listener, int $priority = 0): ErrorHandlerInterface
+    public function on(ErrorListenerInterface $listener): ErrorHandlerInterface
     {
-        $this->provider->listen(ErrorEvent::class, $listener, $priority);
+        $this->provider->listen(ErrorEvent::class, $listener, $listener->getPriority());
         return $this;
     }
 }
