@@ -7,12 +7,9 @@ use RuntimeException;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ServerException extends RuntimeException
-{
-    private ServerRequestInterface $serverRequest;
-    
-    public function __construct(Throwable $e, ServerRequestInterface $request)
+{    
+    public function __construct(Throwable $e, private ServerRequestInterface $request)
     {
-        $this->serverRequest = $request;
         parent::__construct('ServerException', get_error_code($e->getCode()), $e);
     }
     
