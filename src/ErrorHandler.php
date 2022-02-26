@@ -12,32 +12,13 @@ use Bermuda\Eventor\Provider\PrioritizedProvider;
 use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 
 final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface
-{
-    use ErrorHandlerTrait;
-    
-    private EmitterInterface $emitter;
-   
+{ 
+    private PrioritizedProvider $provider;
     public function __construct(private ErrorResponseGeneratorInterface $generator, private EmitterInterface $emitter, 
         private ErrorRendererInterface $renderer = new WhoopsRenderer, private EventDispatcherInterface $dispatcher = new EventDispatcher, 
         private int $errorLevel = E_ALL
-    )
-    {
-    }
-    
-    public function setEmitter(EmitterInterface $emitter): self 
-    {
-        $this->emitter = $emitter;
-        return $this;
-    }
-    
-    /**
-     * @param ErrorResponseGenerator $generator
-     * @return self
-     */
-    public function setRenderer(ErrorRendererInterface $renderer): self
-    {
-        $this->renderer = $renderer;
-        return $this;
+    ){
+        $this->dispatcher = $this->dispatcher->attach($this->provider = new PrioritizedProvider);
     }
     
     public function registerHandler(ErrorHandlerInterface $handler): self
