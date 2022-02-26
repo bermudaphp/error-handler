@@ -34,7 +34,7 @@ final class WhoopsRenderer implements ErrorRendererInterface
     private function addHandler(RunInterface $whoops): RunInterface
     {
         if (Misc::isCommandLine()) {
-            $whoops->pushHandler(new PrettyPageHandler);
+            $whoops->pushHandler(new PlainTextHandler);
             return $whops;
         }
 
