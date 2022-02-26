@@ -4,7 +4,7 @@ namespace Bermuda\ErrorHandler;
 
 use Throwable;
 
-interface ErrorHandlerInterface
+interface ErrorHandlerInterface extends ErrorRendererInterface
 {
     /**
      * @param Throwable $e
