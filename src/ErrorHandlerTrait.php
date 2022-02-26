@@ -22,7 +22,7 @@ trait ErrorHandlerTrait
     
     /**
      * @param EventDispatcherInterface $dispatcher
-     * @return self
+     * @return static
      */
     public function setDispatcher(EventDispatcherInterface $dispatcher): EventDispatcherAwareInterface
     {
@@ -36,7 +36,7 @@ trait ErrorHandlerTrait
 
     /**
      * @param ErrorListenerInterface $listener
-     * @return void
+     * @return static
      */
     public function on(ErrorListenerInterface $listener, int $priority = 0): ErrorHandlerInterface
     {
