@@ -12,7 +12,7 @@ final class ErrorResponseGeneratorFactory
 {
     public function __invoke(ContainerInterface $container): WhoopsErrorGenerator|TemplateErrorGenerator|JsonErrorGenerator
     {
-        if ($container->get('config')['debug']) {
+        if ($container->get('config')['errors']['mode'] == 'whoops') {
             if ($container->has(RunInterface::class)) {
                 $run = $container->get(RunInterface::class);
             }
