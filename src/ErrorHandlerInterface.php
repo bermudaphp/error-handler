@@ -8,5 +8,5 @@ interface ErrorHandlerInterface
 {
     public function canHandle(Throwable $e): bool ;
     public function handleException(Throwable $e): never ;
-    public function on(ErrorListenerInterface $listener, int $priority = 0): ErrorHandlerInterface ;
+    public function on(ErrorListenerInterface $listener): ErrorHandlerInterface ;
 }
