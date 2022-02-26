@@ -18,7 +18,6 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
     private $templateRenderer;
     public function __construct(callable $templateRenderer, private ResponseFactoryInterface $responseFactory)
     {
-        $this->responseFactory = $responseFactory;
         $this->templateRenderer = static fn($code):string => $templateRenderer($code);
     }
 
