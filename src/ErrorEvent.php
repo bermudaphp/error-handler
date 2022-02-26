@@ -6,11 +6,11 @@ use Throwable;
 
 class ErrorEvent
 {
-    protected Throwable $e;
+    public readonly Throwable $throwable;
    
     public function __construct(Throwable $e)
     {
-        $this->e = $e;
+        $this->throwable = $e;
     }
 
     /**
@@ -18,6 +18,6 @@ class ErrorEvent
      */
     public function getThrowable(): Throwable
     {
-        return $this->e;
+        return $this->throwable;
     }
 }
