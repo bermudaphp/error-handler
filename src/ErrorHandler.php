@@ -16,10 +16,14 @@ use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface
 { 
     private PrioritizedProvider $provider;
+    private EventDispatcherInterface $dispatcher;
+    
     public function __construct(private ErrorResponseGeneratorInterface $generator, private EmitterInterface $emitter, 
-        private ErrorRendererInterface $renderer = new WhoopsRenderer, private EventDispatcherInterface $dispatcher = new EventDispatcher
+        private ErrorRendererInterface $renderer = new WhoopsRenderer, EventDispatcherInterface $dispatcher = null
     ){
-        $this->dispatcher = $this->dispatcher->attach($this->provider = new PrioritizedProvider);
+        $this->provider = new PrioritizedProvider;
+        $this->dispatcher = $dispatcher == null ? new EventDispatcher($this->provider) 
+                : $dispatcher->attach($this->provider);
     }
     
     public function registerHandler(ErrorHandlerInterface $handler): self
