@@ -11,7 +11,7 @@ use Whoops\Handler\PlainTextHandler;
 use Whoops\Util\Misc;
 use Bermuda\ErrorHandler\ErrorRendererInterface;
 
-final class WhoopsRenderer implements ErrorRendererInterface, ServerRequestAwareInterface
+final class WhoopsRenderer implements ErrorRendererInterface
 {
     private RunInterface $whoops;
     private ?ServerRequestInterface $request = null;
@@ -32,12 +32,6 @@ final class WhoopsRenderer implements ErrorRendererInterface, ServerRequestAware
 
         $this->whoops = $whoops;
         
-        return $this;
-    }
-    
-    public function setServerRequest(ServerRequestInterface $request): ServerRequestAwareInterface
-    {
-        $this->request = $request;
         return $this;
     }
     
