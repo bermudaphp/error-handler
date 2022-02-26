@@ -7,7 +7,7 @@ use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 
 final class ServerErrorEvent extends ErrorEvent
 {
-    public function __construct(Throwable $e, private ServerRequestInterface $request)
+    public function __construct(Throwable $e, public readonly ServerRequestInterface $serverRequest)
     {
         parent::__construct($e);
     }
@@ -17,6 +17,6 @@ final class ServerErrorEvent extends ErrorEvent
      */
     public function getServerRequest(): ServerRequestInterface
     {
-        return $this->request;
+        return $this->serverRequest;
     }
 }
