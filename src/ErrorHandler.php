@@ -69,7 +69,7 @@ final class ErrorHandler implements ErrorHandlerInterface
         
         if ($event instanceof ServerErrorEvent) {
             $this->dispatcher->dispatch($event);
-            $this->emitter->emit($this->generator->generate($event->getThrowable()));
+            $this->emitter->emit($this->generator->generate($event->getThrowable(), $event->getServerRequest()));
             exit;
         }
         
