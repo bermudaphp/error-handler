@@ -2,10 +2,6 @@
 
 namespace Bermuda\ErrorHandler;
 
-/**
- * Class ConfigProvider
- * @package Bermuda\ErrorHandler
- */
 final class ConfigProvider extends \Bermuda\Config\ConfigProvider
 {
     /**
