@@ -6,8 +6,6 @@ use Throwable;
 
 interface ErrorHandlerInterface extends ErrorRendererInterface
 {
-    /**
-     * @param Throwable $e
-     */
+    public function canHandle(Throwable $e): bool ;
     public function handleException(Throwable $e): never ;
 }
