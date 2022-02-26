@@ -10,16 +10,13 @@ use Psr\Http\Message\ResponseInterface;
 use Bermuda\ErrorHandler\ServerException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Bermuda\HTTP\ServerRequestAwareInterface;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
+use function Bermuda\ErrorHandler\get_error_code;
 
-class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
+final class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
 {
-    private RunInterface $whoops;
-    private ResponseFactoryInterface $responseFactory;
-
-    public function __construct(ResponseFactoryInterface $responseFactory, RunInterface $whoops = null)
-    {
-        $this->setWhoops($whoops)->responseFactory = $responseFactory;
+    public function __construct(private ResponseFactoryInterface $responseFactory, private WhoopsRenderer $whoops = new WhoopsRenderer) {
     }
 
     /**
@@ -27,57 +24,15 @@ class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
      */
     public function generateResponse(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
-        ($response = $this->responseFactory->createResponse($e->getCode()))
-            ->getBody()->write($this->renderException($e));
-
+        $renderer = clone $this->renderer;
+        
+        if ($renderer instanceof ServerRequestAwareInterface) {
+            $renderer->setServerRequest($request);
+        }
+        
+        $response = $this->responseFactory->createResponse(get_error_code($e->getCode()));
+        $response->getBody()->write($renderer->renderException($e));
+        
         return $response;
-    }
-
-    protected function renderException(ServerException $e): string
-    {
-        foreach ($this->whoops->getHandlers() as $handler) {
-            $this->addRequestInformation($handler, $e->getServerRequest());
-        }
-
-        return $this->whoops->handleException($e->getPrevious());
-    }
-
-    /**
-     * @param RunInterface|null $whoops
-     * @return $this
-     */
-    protected function setWhoops(?RunInterface $whoops): self
-    {
-        if (!$whoops) {
-
-            $whoops = new Run();
-
-            foreach ($this->getHandlers() as $handler) {
-                $whoops->pushHandler($handler);
-            }
-        }
-
-        $whoops->allowQuit(false);
-        $whoops->writeToOutput(false);
-
-        $this->whoops = $whoops;
-
-        return $this;
-    }
-
-    /**
-     * @param PrettyPageHandler $handler
-     * @param ServerRequestInterface $request
-     */
-    protected function addRequestInformation($handler, ServerRequestInterface $request): void
-    {
-    }
-
-    /**
-     * @return HandlerInterface[]
-     */
-    protected function getHandlers(): iterable
-    {
-        yield new PrettyPageHandler();
     }
 }
