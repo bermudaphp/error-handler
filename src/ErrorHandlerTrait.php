@@ -11,9 +11,9 @@ use Bermuda\Eventor\Provider\PrioritizedProvider;
 trait ErrorHandlerTrait
 {
     private EventDispatcherInterface $dispatcher;
-    private ?PrioritizedProvider $provider = null;
+    private ?PrioritizedListenerProviderInterface $provider = null;
    
-    public function __construct(private ErrorResponseGeneratorInterface $generator, 
+    public function __construct(private ErrorResponseGeneratorInterface $generator, private EmitterInterface $emitter
         EventDispatcherInterface $dispatcher = null
     ){
         $this->setDispatcher($dispatcher ?? new EventDispatcher);
