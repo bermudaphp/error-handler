@@ -49,10 +49,9 @@ final class ErrorHandler implements ErrorHandlerInterface
      */                                             
     public function handleException(Throwable $e): never
     {
-        if ($e instanceof ServerException)
-        {
-            $response = $this->generator->generate($e);
-            $response = $this->dispatcher->dispatch(ServerErrorEvent::makeFrom($e, $response))->response();
+        if ($e instanceof ServerException) {
+            $event = new ServerErrorEvent($e, $this->generator->generate($e));
+            $response = $this->dispatcher->dispatch($event)->getResponse();
             $this->emitter->emit($response);
             exit;
         }
