@@ -11,13 +11,13 @@ use Whoops\Handler\PlainTextHandler;
 use Whoops\Util\Misc;
 use Bermuda\ErrorHandler\ErrorRendererInterface;
 
-final class WhoopsRenderer implements ErrorRendererInterface
+final class WhoopsRenderer implements ErrorRendererInterface, ServerRequestAwareInterface
 {
     private RunInterface $whoops;
+    private ?ServerRequestInterface $request = null;
   
-    public function __construct(RunInterface $whoops = null)
+    public function __construct(RunInterface $whoops = new Run)
     {
-        $whoops != null ?: $whoops = $this->addHandler(new Run);
         $this->setWhoops($whoops);
     }
   
@@ -25,9 +25,19 @@ final class WhoopsRenderer implements ErrorRendererInterface
     {
         $whoops->allowQuit(false);
         $whoops->writeToOutput(false);
+        
+        if (count($whoops->getHandlers()) == 0) {
+            $this->addHandler($whoops);
+        }
 
         $this->whoops = $whoops;
         
+        return $this;
+    }
+    
+    public function setServerRequest(ServerRequestInterface $request): ServerRequestAwareInterface
+    {
+        $this->request = $request;
         return $this;
     }
     
