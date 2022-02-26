@@ -15,8 +15,8 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     use ErrorHandlerTrait;
     
-    public function __construct(ErrorResponseGeneratorInterface $generator, 
-        EventDispatcherInterface $dispatcher = null, int $errorLevel = E_ALL
+    public function __construct(private ErrorResponseGeneratorInterface $generator, 
+        private EventDispatcherInterface $dispatcher = null, int $errorLevel = E_ALL
     )
     {
         $this->setResponseGenerator($generator)
