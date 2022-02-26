@@ -25,7 +25,7 @@ class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function generateResponse(ServerException $e): ResponseInterface
+    public function generateResponse(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
         ($response = $this->responseFactory->createResponse($e->getCode()))
             ->getBody()->write($this->renderException($e));
