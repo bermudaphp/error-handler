@@ -8,5 +8,5 @@ use Psr\Http\Message\ServerRequestInterface;
 
 interface ErrorResponseGeneratorInterface
 {
-    public function generate(Throwable $e, ServerRequestInterface $request): ResponseInterface ;
+    public function generateResponse(Throwable $e, ServerRequestInterface $request): ResponseInterface ;
 }
