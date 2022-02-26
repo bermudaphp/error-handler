@@ -12,7 +12,9 @@ final class ErrorResponseGeneratorFactory
 {
     public function __invoke(ContainerInterface $container): WhoopsErrorGenerator|TemplateErrorGenerator|JsonErrorGenerator
     {
-        if ($container->get('config')['errors']['mode'] == 'whoops') {
+        $config = $container->get('config')['errors'];
+        
+        if ($config['mode'] == 'whoops') {
             if ($container->has(RunInterface::class)) {
                 $run = $container->get(RunInterface::class);
             }
@@ -20,7 +22,7 @@ final class ErrorResponseGeneratorFactory
             return new WhoopsErrorGenerator($container->get(ResponseFactoryInterface::class), $run ?? null);
         }
         
-        if ($container->has('Bermuda\Templater\RendererInterface') && $container->get('config')['errors']['mode'] == 'template') {
+        if ($container->has('Bermuda\Templater\RendererInterface') && $config['mode'] == 'template') {
             return new TemplateErrorGenerator(static function ($code) use ($container) {
                 return $container->get('Bermuda\Templater\RendererInterface')->render('errors::' . $code);
             }, $container->get(ResponseFactoryInterface::class));
