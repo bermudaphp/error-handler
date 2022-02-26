@@ -20,13 +20,13 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
     public function __construct(callable $templateRenderer, ResponseFactoryInterface $responseFactory)
     {
         $this->responseFactory = $responseFactory;
-        $this->templateRenderer = static fn($code): string => $templateRenderer($code);
+        $this->templateRenderer = static fn($code):string => $templateRenderer($code);
     }
 
     /**
      * @inheritDoc
      */
-    public function generate(ServerException $e): ResponseInterface
+    public function generateResponse(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
         ($response = $this->responseFactory->createResponse($e->getCode())->withHeader('Content-Type', 'text/html'))
             ->getBody()->write(($this->templateRenderer)($e->getCode()));
