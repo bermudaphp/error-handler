@@ -13,7 +13,7 @@
         "php": "^7.4|^8.0|^8.1",
         "psr/log": "^1.1.3",
         "psr/http-factory": "^1.0.1",
-        "bermudaphp/eventor": "^1.1.2",
+        "bermudaphp/eventor": "^1.2",
         "bermudaphp/config": "^1.1.1",
         "laminas/laminas-httphandlerrunner": "^1.4",
         "filp/whoops": "^2.14.5"
