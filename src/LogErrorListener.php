@@ -7,15 +7,9 @@ use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
 
 final class LogErrorListener implements ErrorListenerInterface
 {
+    use ErrorListener;
     private array $except = [];
-    
-    private LoggerInterface $logger;
-    private ErrorRendererInterface $renderer;
-
-    public function __construct(LoggerInterface $logger, ErrorRendererInterface $renderer = null)
-    {
-        $this->logger = $logger;
-        $this->renderer = $renderer ?? WhoopsRenderer::plainTextRendering();
+    public function __construct(private LoggerInterface $logger, private ErrorRendererInterface $renderer = new WhoopsRenderer, private int $priority = 1) {
     }
 
     public function except(string $errorType): self
@@ -36,8 +30,6 @@ final class LogErrorListener implements ErrorListenerInterface
 
     private function getExceptionClass(ErrorEvent $event): string
     {
-        return get_class($event->getThrowable() instanceof ServerException ?
-            $event->getThrowable()->getPrevious() : $event->getThrowable()
-        );
+        return $event->throwable::class;
     }
 }
