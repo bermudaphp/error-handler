@@ -27,10 +27,9 @@ final class LogErrorListener implements ErrorListenerInterface
     /**
      * @param ErrorEvent $event
      */
-    public function __invoke(ErrorEvent $event): void
+    public function handleEvent(ErrorEvent $event): void
     {
-        if (!in_array($this->getExceptionClass($event), $this->except))
-        {
+        if (!in_array($this->getExceptionClass($event), $this->except)) {
             $this->logger->error($this->renderer->renderException($event->getThrowable()));
         }
     }
