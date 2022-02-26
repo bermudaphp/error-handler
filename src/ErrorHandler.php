@@ -16,8 +16,7 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
 { 
     private PrioritizedProvider $provider;
     public function __construct(private ErrorResponseGeneratorInterface $generator, private EmitterInterface $emitter, 
-        private ErrorRendererInterface $renderer = new WhoopsRenderer, private EventDispatcherInterface $dispatcher = new EventDispatcher, 
-        private int $errorLevel = E_ALL
+        private ErrorRendererInterface $renderer = new WhoopsRenderer, private EventDispatcherInterface $dispatcher = new EventDispatcher
     ){
         $this->dispatcher = $this->dispatcher->attach($this->provider = new PrioritizedProvider);
     }
