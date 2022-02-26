@@ -24,10 +24,10 @@ final class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
      */
     public function generateResponse(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
-        $renderer = clone $this->renderer;
+        $renderer = $this->renderer;
         
         if ($renderer instanceof ServerRequestAwareInterface) {
-            $renderer->setServerRequest($request);
+            ($renderer = clone $renderer)->setServerRequest($request);
         }
         
         $response = $this->responseFactory->createResponse(get_error_code($e->getCode()));
