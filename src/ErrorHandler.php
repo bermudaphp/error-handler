@@ -11,21 +11,17 @@ use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 
-final class ErrorHandler implements ErrorHandlerInterface
+final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface
 {
     use ErrorHandlerTrait;
     
     private EmitterInterface $emitter;
    
-    public function __construct(ErrorResponseGeneratorInterface $generator, EmitterInterface $emitter, 
-        ErrorRendererInterface $renderer = null, EventDispatcherInterface $dispatcher = null, 
-        int $errorLevel = E_ALL
+    public function __construct(private ErrorResponseGeneratorInterface $generator, private EmitterInterface $emitter, 
+        private ErrorRendererInterface $renderer = new WhoopsRenderer, private EventDispatcherInterface $dispatcher = new EventDispatcher, 
+        private int $errorLevel = E_ALL
     )
     {
-        $this->setResponseGenerator($generator)->setEmitter($emitter)
-            ->setRenderer($renderer ?? Renderer\WhoopsRenderer::chooseForSapi())
-            ->setDispatcher($dispatcher ?? new EventDispatcher())
-            ->errorLevel($errorLevel);
     }
     
     public function setEmitter(EmitterInterface $emitter): self 
@@ -69,7 +65,10 @@ final class ErrorHandler implements ErrorHandlerInterface
         
         if ($event instanceof ServerErrorEvent) {
             $this->dispatcher->dispatch($event);
-            $this->emitter->emit($this->generator->generate($event->getThrowable(), $event->getServerRequest()));
+            $response = $this->generator->generateResponse(
+                $event->getThrowable(), $event->getServerRequest()
+            );
+            $this->emitter->emit($response);
             exit;
         }
         
