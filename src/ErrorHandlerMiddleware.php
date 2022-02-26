@@ -11,17 +11,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 
-final class ErrorHandlerMiddleware implements MiddlewareInterface
+final class ErrorHandlerMiddleware implements MiddlewareInterface, EventDispatcherAwareInterface
 {
-    use ErrorHandlerTrait;
-    
+    private PrioritizedProvider $provider;
     public function __construct(private ErrorResponseGeneratorInterface $generator, 
-        private EventDispatcherInterface $dispatcher = null, int $errorLevel = E_ALL
-    )
-    {
-        $this->setResponseGenerator($generator)
-            ->setDispatcher($dispatcher ?? new EventDispatcher())
-            ->errorLevel($errorLevel);
+        private EventDispatcherInterface $dispatcher = new ErrorDispatcher, private int $errorLevel = E_ALL
+    ) {
+        $this->provider = new PrioritizedProvider;
+        $this->dispatcher = $dispatcher->attach($this->provider);
     }
     
     /**
@@ -40,11 +37,36 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface
             $response = $handler->handle($request);
         } catch (Throwable $e) {
             $response = $this->generator->generateResponse($e, $request);
+            $this->dispatcher->dispatch(new ServerErrorEvent($e, $request));
         }
         
         restore_error_handler();
         error_reporting($old);
         
         return $response;
+    }
+    
+    /**
+     * @param EventDispatcherInterface $dispatcher
+     * @return self
+     */
+    public function setDispatcher(EventDispatcherInterface $dispatcher): EventDispatcherAwareInterface
+    {
+        if ($this->provider == null) {
+            $this->provider = new PrioritizedProvider;
+        }
+
+        $this->dispatcher = $dispatcher->attach($this->provider);
+        return $this;
+    }
+
+    /**
+     * @param ErrorListenerInterface $listener
+     * @return static
+     */
+    public function on(ErrorListenerInterface $listener): self
+    {
+        $this->provider->listen(ServerErrorEvent::class, $listener, $listener->getPriority());
+        return $this;
     }
 }
