@@ -65,14 +65,16 @@ final class ErrorHandler implements ErrorHandlerInterface
             }
         }
         
-        if ($e instanceof ServerException) {
-            $this->dispatcher->dispatch(new ServerErrorEvent($e->getPrevious(), $e->getServerRequest()));
-            $this->emitter->emit($this->generator->generate($e));
+        $event = createEvent($e);
+        
+        if ($event instanceof ServerErrorEvent) {
+            $this->dispatcher->dispatch($event);
+            $this->emitter->emit($this->generator->generate($event->getThrowable()));
             exit;
         }
         
         $content = $this->renderException($e);
-        $this->dispatcher->dispatch(new ErrorEvent($e));
+        $this->dispatcher->dispatch($event);
         
         exit($content);
     }
