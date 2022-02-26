@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 use Bermuda\Router\Exception\MethodNotAllowedException;
+use function Bermuda\ErrorHandler\get_error_code;
 
 final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
 {
@@ -15,9 +16,7 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
      * @var callable
      */
     private $templateRenderer;
-    private ResponseFactoryInterface $responseFactory;
-
-    public function __construct(callable $templateRenderer, ResponseFactoryInterface $responseFactory)
+    public function __construct(callable $templateRenderer, private ResponseFactoryInterface $responseFactory)
     {
         $this->responseFactory = $responseFactory;
         $this->templateRenderer = static fn($code):string => $templateRenderer($code);
@@ -28,13 +27,10 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
      */
     public function generateResponse(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
-        ($response = $this->responseFactory->createResponse($e->getCode())->withHeader('Content-Type', 'text/html'))
-            ->getBody()->write(($this->templateRenderer)($e->getCode()));
+        $code = get_error_code($e->getCode());
+        ($response = $this->responseFactory->createResponse($code)->withHeader('Content-Type', 'text/html'))
+            ->getBody()->write(($this->templateRenderer)($code));
         
-        if ($e->getPrevious() instanceof MethodNotAllowedException) {
-            $response = $response->withHeader('Allow', implode(', ', $e->getPrevious()->getAllowedMethods()));
-        }
-
         return $response;
     }
 }
