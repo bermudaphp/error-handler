@@ -13,15 +13,13 @@ use Bermuda\Eventor\EventDispatcherAwareInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 
-final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface
+final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface, EventDispatcherAwareInterface
 { 
     use ErrorHandlerTrait;
     public function __construct(private ErrorResponseGeneratorInterface $generator, private EmitterInterface $emitter, 
-        private ErrorRendererInterface $renderer = new WhoopsRenderer, EventDispatcherInterface $dispatcher = null
+        private ErrorRendererInterface $renderer = new WhoopsRenderer, EventDispatcherInterface $dispatcher = new EventDispatcher
     ){
-        $this->provider = new PrioritizedProvider;
-        $this->dispatcher = $dispatcher == null ? new EventDispatcher($this->provider) 
-                : $dispatcher->attach($this->provider);
+        $this->setDispatcher($dispatcher);
     }
     
     public function registerHandler(ErrorHandlerInterface $handler): self
