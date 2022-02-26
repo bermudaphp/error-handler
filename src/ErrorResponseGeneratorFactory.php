@@ -4,14 +4,13 @@ namespace Bermuda\ErrorHandler;
 
 use Whoops\RunInterface;
 use Psr\Container\ContainerInterface;
-use Bermuda\Templater\RendererInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Bermuda\ErrorHandler\Generator\WhoopsErrorGenerator;
 use Bermuda\ErrorHandler\Generator\TemplateErrorGenerator;
 
 final class ErrorResponseGeneratorFactory
 {
-    public function __invoke(ContainerInterface $container): ErrorResponseGeneratorInterface
+    public function __invoke(ContainerInterface $container): WhoopsErrorGenerator|TemplateErrorGenerator|JsonErrorGenerator
     {
         if ($container->get('config')['debug']) {
             if ($container->has(RunInterface::class)) {
@@ -21,8 +20,12 @@ final class ErrorResponseGeneratorFactory
             return new WhoopsErrorGenerator($container->get(ResponseFactoryInterface::class), $run ?? null);
         }
         
-        return new TemplateErrorGenerator(static function ($code) use ($container) {
-            return $container->get(RendererInterface::class)->render('errors::' . $code);
-        }, $container->get(ResponseFactoryInterface::class));
+        if ($container->has('Bermuda\Templater\RendererInterface') && $container->get('config')['errors']['mode'] == 'template') {
+            return new TemplateErrorGenerator(static function ($code) use ($container) {
+                return $container->get('Bermuda\Templater\RendererInterface')->render('errors::' . $code);
+            }, $container->get(ResponseFactoryInterface::class));
+        }
+       
+        return new JsonErrorGenerator($container->get(ResponseFactoryInterface::class));
     }
 }
