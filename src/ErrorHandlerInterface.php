@@ -9,5 +9,5 @@ interface ErrorHandlerInterface
     /**
      * @param Throwable $e
      */
-    public function handleException(Throwable $e): void ;
+    public function handleException(Throwable $e): never ;
 }
