@@ -2,9 +2,11 @@
 
 namespace Bermuda\ErrorHandler;
 
-use Bermuda\Eventor\EventDispatcherInterface;
-use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 use Psr\Container\ContainerInterface;
+use Bermuda\Eventor\EventDispatcher;
+use Bermuda\Eventor\EventDispatcherInterface;
+use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
+use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 
 final class ErrorHandlerFactory
 {
@@ -12,8 +14,7 @@ final class ErrorHandlerFactory
     {
         return new ErrorHandler(
             $container->get(ErrorResponseGeneratorInterface::class), $container->get(EmitterInterface::class),
-            null, null,
-            $container->get('config')['error']['errorLevel'] ?? E_ALL
+            $container->has(ErrorRendererInterface::class) ? $container->get(ErrorRendererInterface::class) : new WhoopsRenderer
         );
     }
 }
