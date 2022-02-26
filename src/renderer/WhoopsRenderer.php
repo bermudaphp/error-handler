@@ -8,54 +8,45 @@ use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 use Whoops\RunInterface;
 use Whoops\Handler\PlainTextHandler;
+use Whoops\Util\Misc;
 use Bermuda\ErrorHandler\ErrorRendererInterface;
 
 final class WhoopsRenderer implements ErrorRendererInterface
 {
     private RunInterface $whoops;
   
-    public function __construct(RunInterface $whoops)
+    public function __construct(RunInterface $whoops = null)
     {
-        $this->whoops = $whoops;
+        $whoops != null ?: $whoops = $this->addHandler(new Run);
+        $this->setWhoops($whoops);
     }
   
     public function setWhoops(RunInterface $whoops): self
     {
-        $this->whoops = $whoops;
-        return $this;
-    }
-
-    public static function plainTextRendering(): self
-    {
-        return new self(self::getWhoops()->pushHandler(new PlainTextHandler));
-    }
-
-    public static function prettyPageRendering(): self
-    {
-        return new self(self::getWhoops()->pushHandler(new PrettyPageHandler));
-    }
-
-    public static function jsonRendering(): self
-    {
-        return new self(self::getWhoops()->pushHandler(new JsonResponseHandler));
-    }
-
-    public static function chooseForSapi(): self
-    {
-        return PHP_SAPI == 'cli' || PHP_SAPI == 'cli-server' ? 
-            self::plainTextRendering() : self::prettyPageRendering();
-    }
-
-    private static function getWhoops(): Run
-    {
-        $whoops = new Run();
-
         $whoops->allowQuit(false);
         $whoops->writeToOutput(false);
 
-        return $whoops;
+        $this->whoops = $whoops;
+        
+        return $this;
     }
-  
+    
+    private function addHandler(RunInterface $whoops): RunInterface
+    {
+        if (Misc::isCommandLine()) {
+            $whoops->pushHandler(new PrettyPageHandler);
+            return $whops;
+        }
+
+        if (Misc::isAjaxRequest()) {
+            $whoops->pushHandler(new JsonResponseHandler);
+            return $whops;
+        }
+        
+        $whoops->pushHandler(new PrettyPageHandler);
+        return $whops;
+    }
+
     /**
      * @inheritDoc
      */
