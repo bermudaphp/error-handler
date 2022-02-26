@@ -32,12 +32,12 @@ final class WhoopsRenderer implements ErrorRendererInterface
 
     public static function prettyPageRendering(): self
     {
-        return new self(self::getWhoops()->pushHandler(new PrettyPageHandler()));
+        return new self(self::getWhoops()->pushHandler(new PrettyPageHandler));
     }
 
     public static function jsonRendering(): self
     {
-        return new self(self::getWhoops()->pushHandler(new JsonResponseHandler()));
+        return new self(self::getWhoops()->pushHandler(new JsonResponseHandler));
     }
 
     public static function chooseForSapi(): self
