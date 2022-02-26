@@ -44,15 +44,30 @@ final class ErrorHandler implements ErrorHandlerInterface
         return $this;
     }
     
+    public function registerHandler(ErrorHandlerInterface $handler): self
+    {
+        $this->handlers[] = $handler;
+    }
+    
     /**
      * @inheritDoc
      */                                             
     public function handleException(Throwable $e): never
     {
+        foreach($this->handlers as $handler) {
+            if ($handler->canHandle($e)) {
+                if ($handler instanceof EventDispatcherAwareInterface) {
+                    $handler->setDispatcher($this->dispatcher)->handleException($e);
+                }
+                
+                $this->dispatcher->dispatch(createEvent($e));
+                $handler->handleException($e);
+            }
+        }
+        
         if ($e instanceof ServerException) {
-            $event = new ServerErrorEvent($e, $this->generator->generate($e));
-            $response = $this->dispatcher->dispatch($event)->getResponse();
-            $this->emitter->emit($response);
+            $this->dispatcher->dispatch(new ServerErrorEvent($e->getPrevious(), $e->getServerRequest()));
+            $this->emitter->emit($this->generator->generate($e));
             exit;
         }
         
@@ -68,5 +83,10 @@ final class ErrorHandler implements ErrorHandlerInterface
     public function renderException(Throwable $e): string
     {
         return $this->renderer->renderException($e);
+    }
+    
+    public function canHandle(Throwable $e): bool
+    {
+        return true;
     }
 }
