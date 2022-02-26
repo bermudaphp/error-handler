@@ -6,6 +6,7 @@ use Throwable;
 use Bermuda\Eventor\EventDispatcher;
 use Psr\Http\Message\ResponseInterface;
 use Bermuda\Eventor\EventDispatcherInterface;
+use Bermuda\Eventor\EventDispatcherAwareInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 
 trait ErrorHandlerTrait
