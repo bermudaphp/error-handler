@@ -15,7 +15,7 @@ final class ServerErrorEvent extends ErrorEvent
     /**
      * @return ServerRequestInterface
      */
-    public function getRequest(): ServerRequestInterface
+    public function getServerRequest(): ServerRequestInterface
     {
         return $this->request;
     }
