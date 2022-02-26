@@ -3,6 +3,7 @@
 namespace Bermuda\ErrorHandler;
 
 use Throwable;
+use Renderer\WhoopsRenderer;
 use Bermuda\Eventor\EventDispatcher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
