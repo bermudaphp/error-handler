@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Bermuda\Eventor\EventDispatcherInterface;
+use Bermuda\Eventor\EventDispatcherAwareInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 
