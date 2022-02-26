@@ -11,7 +11,7 @@ use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 
-final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface
+final class ErrorHandler implements ErrorHandlerInterface
 {
     use ErrorHandlerTrait;
     
@@ -47,7 +47,7 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
     /**
      * @inheritDoc
      */                                             
-    public function handleException(Throwable $e): void
+    public function handleException(Throwable $e): never
     {
         if ($e instanceof ServerException)
         {
