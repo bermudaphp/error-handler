@@ -7,33 +7,13 @@ use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 
 final class ServerErrorEvent extends ErrorEvent
 {
-    public function __construct(Throwable $e, private ServerRequestInterface $request, private ResponseInterface $response)
+    public function __construct(Throwable $e, private ServerRequestInterface $request)
     {
-        parent::__construct($e->getPrevious());
+        parent::__construct($e);
     }
      
     /**
-     * @return ResponseInterface
-     */
-    public function getResponse(): ResponseInterface
-    {
-        return $this->response;
-    }
-    
-    public function setResponse(ResponseInterface $response): self
-    {
-        $this->response = $response;
-        return $this;
-    }
-    
-    public function setRequest(ServerRequestInterface $request): self
-    {
-        $this->request = $request;
-        return $this;
-    }
-    
-    /**
-     * @return ServerRequestInterface|null
+     * @return ServerRequestInterface
      */
     public function getRequest(): ServerRequestInterface
     {
