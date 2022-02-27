@@ -28,8 +28,8 @@ final class ConfigProvider extends \Bermuda\Config\ConfigProvider
         ];
     }
     
-    protected function getInvokables(): array
+    protected function getAliases(): array
     {
-        return [ErrorRendererInterface::class => Renderer\WhoopsRenderer::class];
+        return [ErrorRendererInterface::class => WhoopsRenderer::class];
     }
 }
