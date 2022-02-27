@@ -36,16 +36,16 @@ final class WhoopsRenderer implements ErrorRendererInterface
     {
         if (Misc::isCommandLine()) {
             $whoops->pushHandler(new PlainTextHandler);
-            return $whops;
+            return $whoops;
         }
 
         if (Misc::isAjaxRequest()) {
             $whoops->pushHandler(new JsonResponseHandler);
-            return $whops;
+            return $whoops;
         }
         
         $whoops->pushHandler(new PrettyPageHandler);
-        return $whops;
+        return $whoops;
     }
 
     /**
