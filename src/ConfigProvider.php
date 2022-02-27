@@ -2,13 +2,13 @@
 
 namespace Bermuda\ErrorHandler;
 
+use Whoops\Run;
+use Whoops\RunInterface;
+use Generator\WhoopsErrorGenerator;
 use Psr\Container\ContainerInterface;
 use Generator\ErrorResponseGenerator;
-use Generator\WhoopsErrorGenerator;
-use Renderer\WhoopsRenderer;
-use Whoops\RunInterface;
-use Whoops\Run;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
 
 final class ConfigProvider extends \Bermuda\Config\ConfigProvider
 {
