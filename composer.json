@@ -15,6 +15,7 @@
         "psr/http-factory": "^1.0.1",
         "bermudaphp/eventor": "^1.2",
         "bermudaphp/config": "^1.1.1",
+        "bermudaphp/http-emitter": "^1.0",
         "laminas/laminas-httphandlerrunner": "^1.4",
         "filp/whoops": "^2.14.5"
     }
