@@ -10,12 +10,16 @@ use Whoops\RunInterface;
 use Whoops\Handler\PlainTextHandler;
 use Whoops\Util\Misc;
 use Bermuda\ErrorHandler\ErrorRendererInterface;
+use Bermuda\HTTP\Contracts\ServerRequestAwareInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-final class WhoopsRenderer implements ErrorRendererInterface
+final class WhoopsRenderer implements ErrorRendererInterface, ServerRequestAwareInterface
 {
-    public function __construct(private RunInterface $whoops = new Run)
+    private $configurator = null;
+    private ?ServerRequestInterface $request = null;
+    public function __construct(private RunInterface $whoops = new Run, callable $configurator = null)
     {
-        $this->setWhoops($whoops);
+        $this->setWhoops($whoops)->configurator = $configurator;
     }
   
     public function setWhoops(RunInterface $whoops): self
@@ -47,12 +51,28 @@ final class WhoopsRenderer implements ErrorRendererInterface
         $whoops->pushHandler(new PrettyPageHandler);
         return $whoops;
     }
+    
+    public function setServerRequest(ServerRequestInterface $serverRequest): ServerRequestAwareInterface
+    {
+        $this->request = $serverRequest;
+        return $this;
+    }
+    
+    public function setHandlerConfigurator(callable $configurator): self
+    {
+        $this->configurator = $configurator;
+        return $this;
+    }
 
     /**
      * @inheritDoc
      */
     public function renderException(Throwable $e): string
     {
+        if ($this->request != null && $this->configurator != null) {
+            foreach($this->whoops->getHandlers() as $handler) ($this->configurator)($handler, $this->request);
+        }
+        
         return $this->whoops->handleException($e);
     }
 }
