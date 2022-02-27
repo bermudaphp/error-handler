@@ -10,18 +10,11 @@ $pipeline->pipe($errorHandler); // Add ErrorHandlerMiddleware at the beginning o
 # Event listening
 ```php
 $errorListenerInterfaceInstance = new LogErrorListener($logger);
-$priority = 1;
-
-$errorHandler->listen($errorListenerInterfaceInstance, $priority);
+$errorHandler->on($errorListenerInterfaceInstance);
 ````
 # ServerErrorEvent
 ```php
-$request = $event->request();
+$request = $event->getRequest();
 $exception = $event->getThrowable();
-$response = $event->response();
-
-... modify response
-
-$event->response($modifiedResponse);
-
+$response = $event->getResponse();
 ````
