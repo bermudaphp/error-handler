@@ -2,6 +2,7 @@
 
 namespace Bermuda\ErrorHandler\Generator;
 
+use Throwable;
 use Whoops\Run;
 use Whoops\RunInterface;
 use Whoops\Handler\HandlerInterface;
@@ -17,6 +18,11 @@ use function Bermuda\ErrorHandler\get_error_code;
 final class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
 {
     public function __construct(private ResponseFactoryInterface $responseFactory, private WhoopsRenderer $whoops = new WhoopsRenderer) {
+    }
+
+    public function canGenerate(Throwable $e, ServerRequestInterface $request = null): bool
+    {
+        return true;
     }
 
     /**
