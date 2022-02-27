@@ -22,6 +22,6 @@ final class ConfigProvider extends \Bermuda\Config\ConfigProvider
     
     protected function getInvokables(): array
     {
-        return [ErrorRendererInterface::class => Renderer\WhoopsErrorRenderer::class];
+        return [ErrorRendererInterface::class => Renderer\WhoopsRenderer::class];
     }
 }
