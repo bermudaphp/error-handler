@@ -14,7 +14,7 @@ trait ErrorHandlerTrait
     private EventDispatcherInterface $dispatcher;
     private ?PrioritizedListenerProviderInterface $provider = null;
    
-    public function __construct(private ErrorResponseGeneratorInterface $generator, private EmitterInterface $emitter
+    public function __construct(private ErrorResponseGeneratorInterface $generator, private EmitterInterface $emitter,
         EventDispatcherInterface $dispatcher = new EventDispatcher
     ){
         $this->setDispatcher($dispatcher);
