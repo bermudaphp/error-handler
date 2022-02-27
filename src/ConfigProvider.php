@@ -2,6 +2,10 @@
 
 namespace Bermuda\ErrorHandler;
 
+use Generator\ErrorResponseGenerator;
+use Generator\WhoopsErrorGenerator;
+use Psr\Http\Message\ResponseFactoryInterface;
+
 final class ConfigProvider extends \Bermuda\Config\ConfigProvider
 {
     /**
@@ -10,8 +14,9 @@ final class ConfigProvider extends \Bermuda\Config\ConfigProvider
     protected function getFactories(): array
     {
         return [
-            ErrorResponseGeneratorInterface::class => ErrorResponseGeneratorFactory::class,
-            ErrorHandlerInterface::class => ErrorHandlerFactory::class,
+            ErrorHandler::class => ErrorHandlerFactory::class,
+            ErrorResponseGenerator::class => fn(ContainerInterface $container) => new ErrorResponseGenerator($container->get(WhoopsErrorGenerator::class));
+            WhoopsErrorGenerator::class => fn(ContainerInterface $container) => new WhoopsErrorGenerator($container->get(ResponseFactoryInterface::class));
         ];
     }
     
