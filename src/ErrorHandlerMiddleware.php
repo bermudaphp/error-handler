@@ -14,7 +14,7 @@ use Bermuda\Eventor\Provider\PrioritizedProvider;
 final class ErrorHandlerMiddleware implements MiddlewareInterface, EventDispatcherAwareInterface
 {
     private PrioritizedProvider $provider;
-    public function __construct(private ErrorResponseGenerator $generator, 
+    public function __construct(private Generator\ErrorResponseGenerator $generator, 
         private EventDispatcherInterface $dispatcher = new ErrorDispatcher, private int $errorLevel = E_ALL
     ) {
         $this->provider = new PrioritizedProvider;
