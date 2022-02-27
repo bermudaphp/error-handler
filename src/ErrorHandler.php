@@ -17,6 +17,7 @@ use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface, EventDispatcherAwareInterface
 { 
     use ErrorHandlerTrait;
+    private array $handlers = [];
     public function __construct(Generator\ErrorResponseGenerator $generator, EmitterInterface $emitter = new Emitter, 
         private ErrorRendererInterface $renderer = new WhoopsRenderer, EventDispatcherInterface $dispatcher = new EventDispatcher
     ){
