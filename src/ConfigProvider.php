@@ -23,7 +23,7 @@ final class ConfigProvider extends \Bermuda\Config\ConfigProvider
             WhoopsErrorGenerator::class => fn(ContainerInterface $container) => new WhoopsErrorGenerator($container->get(ResponseFactoryInterface::class)),
             WhoopsRenderer::class => fn(ContainerInterface $container) => new WhoopsRenderer(
                 $container->has(RunInterface::class) ? $container->get(RunInterface::class) : new Run,
-                $container->get('config')['error']['error.renderer.configuator'] ?? null
+                $container->get('config')['error']['error.renderer.configurator'] ?? null
             ),
         ];
     }
