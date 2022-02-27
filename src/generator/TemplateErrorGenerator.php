@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 use Bermuda\Router\Exception\MethodNotAllowedException;
+use Throwable;
 use function Bermuda\ErrorHandler\get_error_code;
 
 final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
@@ -19,6 +20,11 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
     public function __construct(callable $templateRenderer, private ResponseFactoryInterface $responseFactory)
     {
         $this->templateRenderer = static fn($code, ServerRequestInterface $req = null): string => $templateRenderer($code, $req);
+    }
+    
+    public function canGenerate(Throwable $e, ServerRequestInterface $request = null): bool
+    {
+        return true;
     }
 
     /**
