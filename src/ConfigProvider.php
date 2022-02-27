@@ -2,6 +2,7 @@
 
 namespace Bermuda\ErrorHandler;
 
+use Psr\Container\ContainerInterface;
 use Generator\ErrorResponseGenerator;
 use Generator\WhoopsErrorGenerator;
 use Psr\Http\Message\ResponseFactoryInterface;
