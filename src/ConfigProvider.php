@@ -16,8 +16,8 @@ final class ConfigProvider extends \Bermuda\Config\ConfigProvider
     {
         return [
             ErrorHandler::class => ErrorHandlerFactory::class,
-            ErrorResponseGenerator::class => fn(ContainerInterface $container) => new ErrorResponseGenerator($container->get(WhoopsErrorGenerator::class));
-            WhoopsErrorGenerator::class => fn(ContainerInterface $container) => new WhoopsErrorGenerator($container->get(ResponseFactoryInterface::class));
+            ErrorResponseGenerator::class => fn(ContainerInterface $container) => new ErrorResponseGenerator($container->get(WhoopsErrorGenerator::class)),
+            WhoopsErrorGenerator::class => fn(ContainerInterface $container) => new WhoopsErrorGenerator($container->get(ResponseFactoryInterface::class))
         ];
     }
     
