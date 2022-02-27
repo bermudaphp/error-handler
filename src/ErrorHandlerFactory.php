@@ -8,6 +8,7 @@ use Bermuda\Eventor\EventDispatche;
 use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
 use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
+use Bermuda\ErrorHandler\Generator\ErrorResponseGenerator;
 
 final class ErrorHandlerFactory
 {
