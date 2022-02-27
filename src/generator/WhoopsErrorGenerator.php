@@ -10,7 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Bermuda\ErrorHandler\ServerException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Bermuda\HTTP\ServerRequestAwareInterface;
+use Bermuda\HTTP\Contracts\ServerRequestAwareInterface;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 use function Bermuda\ErrorHandler\get_error_code;
 
