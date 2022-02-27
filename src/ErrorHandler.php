@@ -3,6 +3,7 @@
 namespace Bermuda\ErrorHandler;
 
 use Throwable;
+use Bermuda\HTTP\Emitter;
 use Renderer\WhoopsRenderer;
 use Bermuda\Eventor\EventDispatcher;
 use Psr\Http\Message\ResponseInterface;
@@ -16,7 +17,7 @@ use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface, EventDispatcherAwareInterface
 { 
     use ErrorHandlerTrait;
-    public function __construct(private ErrorResponseGeneratorInterface $generator, private EmitterInterface $emitter, 
+    public function __construct(private ErrorResponseGeneratorInterface $generator, private EmitterInterface $emitter = new Emitter, 
         private ErrorRendererInterface $renderer = new WhoopsRenderer, EventDispatcherInterface $dispatcher = new EventDispatcher
     ){
         $this->setDispatcher($dispatcher);
