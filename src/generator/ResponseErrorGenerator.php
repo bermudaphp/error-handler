@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface
 
-final class ResponseErrorGenerator implements ErrorResponseGeneratorInterface
+final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface
 {
     private array $generators = [];
     public function __construct(private WhoopsErrorGenerator $whoopsErrorGenerator) {
