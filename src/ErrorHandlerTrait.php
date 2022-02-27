@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\EventDispatcherAwareInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
+use Bermuda\Eventor\Provider\PrioritizedListenerProviderInterface;
 
 trait ErrorHandlerTrait
 {
