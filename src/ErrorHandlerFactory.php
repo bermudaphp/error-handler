@@ -13,7 +13,7 @@ final class ErrorHandlerFactory
     public function __invoke(ContainerInterface $container): ErrorHandler
     {
         return new ErrorHandler(
-            $container->get(ErrorResponseGeneratorInterface::class), $container->get(EmitterInterface::class),
+            $container->get(ErrorResponseGenerator::class), $container->get(EmitterInterface::class),
             $container->has(ErrorRendererInterface::class) ? $container->get(ErrorRendererInterface::class) : new WhoopsRenderer,
             $container->has(EventDispatcherInterface::class) ? $container->get(EventDispatcherInterface::class) : new EventDispatcher
         );
