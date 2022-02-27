@@ -23,13 +23,8 @@ final class LogErrorListener implements ErrorListenerInterface
      */
     public function handleEvent(ErrorEvent $event): void
     {
-        if (!in_array($this->getExceptionClass($event), $this->except)) {
-            $this->logger->error($this->renderer->renderException($event->getThrowable()));
+        if (!in_array($event->throwable::class, $this->except)) {
+            $this->logger->error($this->renderer->renderException($event->throwable));
         }
-    }
-
-    private function getExceptionClass(ErrorEvent $event): string
-    {
-        return $event->throwable::class;
     }
 }
