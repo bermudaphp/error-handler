@@ -22,11 +22,11 @@ final class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function generateResponse(Throwable $e, ServerRequestInterface $request): ResponseInterface
+    public function generateResponse(Throwable $e, ServerRequestInterface $request = null): ResponseInterface
     {
         $renderer = $this->renderer;
         
-        if ($renderer instanceof ServerRequestAwareInterface) {
+        if ($request != null && $renderer instanceof ServerRequestAwareInterface) {
             ($renderer = clone $renderer)->setServerRequest($request);
         }
         
