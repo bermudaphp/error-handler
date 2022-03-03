@@ -12,7 +12,7 @@ use Bermuda\HTTP\Contracts\ResponseFactoryAwareInterface;
 final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, ResponseFactoryAwareInterface
 {
     private array $generators = [];
-    public function __construct(private ResponseFactoryInterface $factory, private WhoopsErrorGenerator $whoopsErrorGenerator) {
+    public function __construct(private ResponseFactoryInterface $responseFactory, private WhoopsErrorGenerator $whoopsErrorGenerator) {
     }
 
     /**
@@ -21,8 +21,7 @@ final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, R
      */
     public function setResponseFactory(ResponseFactoryInterface $factory): ResponseFactoryAwareInterface
     {
-        $this->factory = $factory;
-        
+        $this->pesponseFactory = $factory;
         foreach ($this->generators as $generator) {
             if ($generator instanceof ResponseFactoryAwareInterface) {
                 $generator->setResponseFactory($factory);
