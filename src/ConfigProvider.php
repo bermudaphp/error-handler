@@ -19,7 +19,7 @@ final class ConfigProvider extends \Bermuda\Config\ConfigProvider
     {
         return [
             ErrorHandler::class => ErrorHandlerFactory::class,
-            ErrorResponseGenerator::class => static fn(ContainerInterface $container) => new ErrorResponseGenerator($container->get(WhoopsErrorGenerator::class)),
+            ErrorResponseGenerator::class => ErrorResponseGeneratorFactory::class,
             WhoopsErrorGenerator::class => static fn(ContainerInterface $container) => new WhoopsErrorGenerator($container->get(ResponseFactoryInterface::class)),
             WhoopsRenderer::class => static fn(ContainerInterface $container) => new WhoopsRenderer(
                 $container->has(RunInterface::class) ? $container->get(RunInterface::class) : new Run,
