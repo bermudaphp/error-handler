@@ -6,7 +6,7 @@ use Whoops\Run;
 use Whoops\RunInterface;
 use Generator\WhoopsErrorGenerator;
 use Psr\Container\ContainerInterface;
-use Generator\ErrorResponseGenerator;
+use Bermuda\ErrorHandler\Generator\ErrorResponseGenerator;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
 
@@ -30,6 +30,9 @@ final class ConfigProvider extends \Bermuda\Config\ConfigProvider
     
     protected function getAliases(): array
     {
-        return [ErrorRendererInterface::class => WhoopsRenderer::class];
+        return [
+            ErrorRendererInterface::class => WhoopsRenderer::class,
+            ErrorResponseGeneratorInterface::class => ErrorResponseGenerator::class
+        ];
     }
 }
