@@ -32,6 +32,11 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
         $this->handlers[] = $handler;
     }
     
+    public function canGenerate(Throwable $e, ServerRequestInterface $request = null): bool
+    {
+        return true;
+    }
+
     /**
      * @inheritDoc
      */                                             
