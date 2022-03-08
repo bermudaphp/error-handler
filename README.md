@@ -6,7 +6,7 @@ composer require bermudaphp/error-handler
 ```php
 $generator = new ErrorResponseGenerator(new WhoopsErrorGenerator($Psr17ResponseFactory));
 $generator->addGenerator($myConcreteErrorResponseGenerator);
-$errorHandler = new ErrorHandlerMiddleware($generator);
+$errorHandler = new ErrorHandlerMiddleware(new ErrorHandler($generator));
 $pipeline->pipe($errorHandler); // Add ErrorHandlerMiddleware at the beginning of the middleware queue
 ````
 # Event listening
@@ -16,7 +16,6 @@ $errorHandler->on($errorListenerInterfaceInstance);
 ````
 # ServerErrorEvent
 ```php
-$request = $event->getRequest();
-$exception = $event->getThrowable();
-$response = $event->getResponse();
+$request = $event->serverRequest;
+$exception = $event->throwable;
 ````
