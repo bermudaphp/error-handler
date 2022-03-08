@@ -72,7 +72,9 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
 
     /**
      * @param Throwable $e
+     * @param bool $dispatchEvent
      * @return ResponseInterface
+     * @throws Throwable
      */
     public function generateResponse(Throwable $e, bool $dispatchEvent = false): ResponseInterface
     {
