@@ -22,7 +22,7 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
         $this->templateRenderer = static fn($code, ServerRequestInterface $req = null): string => $templateRenderer($code, $req);
     }
     
-    public function canGenerate(Throwable $e, ServerRequestInterface $request = null): bool
+    public function canGenerate(Throwable $e): bool
     {
         return true;
     }
@@ -30,11 +30,11 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function generateResponse(Throwable $e, ServerRequestInterface $request = null): ResponseInterface
+    public function generateResponse(Throwable $e): ResponseInterface
     {
-        $code = get_error_code($e->getCode());
+        $code = get_error_code($e);
         ($response = $this->responseFactory->createResponse($code)->withHeader('Content-Type', 'text/html'))
-            ->getBody()->write(($this->templateRenderer)($code, $request));
+            ->getBody()->write(($this->templateRenderer)($code, $e?->serverRequest));
         
         return $response;
     }
