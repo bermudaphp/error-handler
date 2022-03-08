@@ -50,7 +50,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface, EventDispatch
         
         return $response;
     }
-    
+
     /**
      * @param ErrorListenerInterface $listener
      * @return static
