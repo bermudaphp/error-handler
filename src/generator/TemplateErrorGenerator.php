@@ -2,6 +2,8 @@
 
 namespace Bermuda\ErrorHandler\Generator;
 
+use Bermuda\HTTP\Contracts\ServerRequestAwareInterface;
+use Bermuda\HTTP\Contracts\ServerRequestAwareTrait;
 use Psr\Http\Message\ResponseInterface;
 use Bermuda\ErrorHandler\ServerException;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -11,8 +13,10 @@ use Bermuda\Router\Exception\MethodNotAllowedException;
 use Throwable;
 use function Bermuda\ErrorHandler\get_error_code;
 
-final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
+final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface, ServerRequestAwareInterface
 {
+    use ServerRequestAwareTrait;
+    
     /**
      * @var callable
      */
@@ -34,7 +38,7 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface
     {
         $code = get_error_code($e);
         ($response = $this->responseFactory->createResponse($code)->withHeader('Content-Type', 'text/html'))
-            ->getBody()->write(($this->templateRenderer)($code, $e?->serverRequest));
+            ->getBody()->write(($this->templateRenderer)($code, $e?->serverRequest ?? $this->serverRequest));
         
         return $response;
     }
