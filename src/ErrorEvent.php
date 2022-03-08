@@ -3,21 +3,11 @@
 namespace Bermuda\ErrorHandler;
 
 use Throwable;
+use Psr\Http\Message\ServerRequestInterface;
 
 class ErrorEvent
 {
-    public readonly Throwable $throwable;
-   
-    public function __construct(Throwable $e)
-    {
-        $this->throwable = $e;
-    }
-
-    /**
-     * @return Throwable
-     */
-    public function getThrowable(): Throwable
-    {
-        return $this->throwable;
+    public function __construct(public readonly Throwable $throwable, 
+        public readonly ?ServerRequestInterface $serverRequest = null) {
     }
 }
