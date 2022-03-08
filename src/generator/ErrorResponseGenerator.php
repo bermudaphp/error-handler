@@ -54,6 +54,10 @@ final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, R
             $generator->setResponseFactory($this->responseFactory);
         }
         
+        if ($this->serverRequest != null && $generator instanceof ServerRequestAwareInterface) {
+            $generator->setServerRequest($this->serverRequest);
+        }
+        
         array_unshift($this->generators, $generator);
         return $this;
     }
