@@ -13,13 +13,15 @@ use Bermuda\Eventor\EventDispatcherAwareInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
 use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
+use Nyholm\Psr7Server\ServerRequestCreator;
+use Nyholm\Psr7Server\ServerRequestCreatorInterface;
 
-final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface, EventDispatcherAwareInterface
+final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface, EventDispatcherAwareInterface, ErrorResponseGeneratorInterface
 { 
     use ErrorHandlerTrait;
     private array $handlers = [];
-    public function __construct(Generator\ErrorResponseGenerator $generator, EmitterInterface $emitter = new Emitter, 
-        private ErrorRendererInterface $renderer = new WhoopsRenderer, EventDispatcherInterface $dispatcher = new EventDispatcher
+    public function __construct(Generator\ErrorResponseGenerator $generator, private ServerRequestCreatorInterface $requestCreator, EmitterInterface $emitter = new Emitter,
+        private ErrorRendererInterface $renderer = new WhoopsRenderer, EventDispatcherInterface $dispatcher = new EventDispatcher,
     ){
         $this->setDispatcher($dispatcher);
         $this->generator = $generator; $this->emitter = $emitter;
@@ -40,29 +42,34 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
                 if ($handler instanceof EventDispatcherAwareInterface) {
                     $handler->setDispatcher($this->dispatcher)->handleException($e);
                 }
-                
                 $this->dispatcher->dispatch(createEvent($e));
                 $handler->handleException($e);
             }
         }
         
-        $event = createEvent($e);
-        
-        if ($event instanceof ServerErrorEvent) {
-            $this->dispatcher->dispatch($event);
-            $response = $this->generator->generateResponse(
-                $event->getThrowable(), $event->getServerRequest()
-            );
+        if ($e instanceof ServerException) {
+            $response = $this->generateResponse($e->throwable, $e->serverRequest);
             $this->emitter->emit($response);
             exit;
         }
         
         $content = $this->renderException($e);
-        $this->dispatcher->dispatch($event);
+        $this->dispatcher->dispatch(new ErrorEvent($e));
         
         exit($content);
     }
-    
+
+    /**
+     * @param Throwable $e
+     * @param ServerRequestInterface|null $request
+     * @return ResponseInterface
+     */
+    public function generateResponse(Throwable $e, ServerRequestInterface $request = null): ResponseInterface
+    {
+        $this->dispatcher->dispatch($event = createEvent($e, $request ?? $this->requestCreator->fromGlobals()));
+        return $this->generator->generateResponse($event->throwable, $event->serverRequest);
+    }
+
     /**
      * @inheritDoc
      */                                         
