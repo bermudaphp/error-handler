@@ -21,7 +21,7 @@ final class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
     public function __construct(private ResponseFactoryInterface $responseFactory, private WhoopsRenderer $renderer = new WhoopsRenderer) {
     }
 
-    public function canGenerate(Throwable $e, ServerRequestInterface $request = null): bool
+    public function canGenerate(Throwable $e): bool
     {
         return true;
     }
@@ -29,15 +29,15 @@ final class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function generateResponse(Throwable $e, ServerRequestInterface $request = null): ResponseInterface
+    public function generateResponse(Throwable $e): ResponseInterface
     {
         $renderer = $this->renderer;
         
-        if ($request != null && $renderer instanceof ServerRequestAwareInterface) {
+        if (($request = $e?->serverRequest) != null && $renderer instanceof ServerRequestAwareInterface) {
             ($renderer = clone $renderer)->setServerRequest($request);
         }
         
-        $response = $this->responseFactory->createResponse(get_error_code($e->getCode()));
+        $response = $this->responseFactory->createResponse(get_error_code($e));
         $response->getBody()->write($renderer->renderException($e));
         
         return $response;
