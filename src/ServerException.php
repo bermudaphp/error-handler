@@ -13,11 +13,6 @@ final class ServerException extends RuntimeException
         parent::__construct('ServerException', get_error_code($e->getCode()), $this->throwable);
     }
     
-    public function getServerRequest(): ServerRequestInterface
-    {
-        return $this->serverRequest;
-    }
-    
     public static function getStatusCode(Throwable $e): int
     {
         return get_error_code($e->getCode());
