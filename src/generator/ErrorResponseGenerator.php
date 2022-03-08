@@ -2,6 +2,7 @@
 
 namespace Bermuda\ErrorHandler\Generator;
 
+use Bermuda\HTTP\Contracts\ServerRequestAwareInterface;
 use Throwable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -9,10 +10,26 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 use Bermuda\HTTP\Contracts\ResponseFactoryAwareInterface;
 
-final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, ResponseFactoryAwareInterface
+final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, ResponseFactoryAwareInterface, ServerRequestAwareInterface
 {
     private array $generators = [];
+    private ServerRequestInterface $serverRequest;
     public function __construct(private ResponseFactoryInterface $responseFactory, private WhoopsErrorGenerator $whoopsErrorGenerator) {
+    }
+
+    /**
+     * @param ServerRequestInterface $serverRequest
+     * @return ServerRequestAwareInterface
+     */
+    public function setServerRequest(ServerRequestInterface $serverRequest): ServerRequestAwareInterface
+    {
+        $this->serverRequest = $serverRequest;
+        foreach ($this->generators as $generator) {
+            if ($generator instanceof ServerRequestAwareInterface) {
+                $generator->setServerRequest($serverRequest);
+            }
+        }
+        return $this;
     }
 
     /**
