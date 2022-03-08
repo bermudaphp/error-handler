@@ -2,6 +2,8 @@
 
 namespace Bermuda\ErrorHandler;
 
+use Bermuda\HTTP\Contracts\ServerRequestAwareInterface;
+use Bermuda\HTTP\Contracts\ServerRequestAwareTrait;
 use Throwable;
 use Bermuda\HTTP\Emitter;
 use Bermuda\Eventor\EventDispatcher;
@@ -16,11 +18,14 @@ use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Nyholm\Psr7Server\ServerRequestCreatorInterface;
 
-final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface, EventDispatcherAwareInterface, ErrorResponseGeneratorInterface
-{ 
-    use ErrorHandlerTrait;
+/**
+ * @method self setServerRequest(ServerRequestInterface $serverRequest)
+ */
+final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterface, EventDispatcherAwareInterface, ErrorResponseGeneratorInterface, ServerRequestAwareInterface
+{
     private array $handlers = [];
-    public function __construct(Generator\ErrorResponseGenerator $generator, private ServerRequestCreatorInterface $requestCreator, EmitterInterface $emitter = new Emitter,
+    use ErrorHandlerTrait, ServerRequestAwareTrait;
+    public function __construct(Generator\ErrorResponseGenerator $generator, EmitterInterface $emitter = new Emitter,
         private ErrorRendererInterface $renderer = new WhoopsRenderer, EventDispatcherInterface $dispatcher = new EventDispatcher,
     ){
         $this->setDispatcher($dispatcher);
@@ -30,9 +35,10 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
     public function registerHandler(ErrorHandlerInterface $handler): self
     {
         $this->handlers[] = $handler;
+        return $this;
     }
     
-    public function canGenerate(Throwable $e, ServerRequestInterface $request = null): bool
+    public function canGenerate(Throwable $e): bool
     {
         return true;
     }
@@ -53,7 +59,7 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
         }
         
         if ($e instanceof ServerException) {
-            $response = $this->generateResponse($e->throwable, $e->serverRequest);
+            $response = $this->generateResponse($e, true);
             $this->emitter->emit($response);
             exit;
         }
@@ -66,13 +72,21 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
 
     /**
      * @param Throwable $e
-     * @param ServerRequestInterface|null $request
      * @return ResponseInterface
      */
-    public function generateResponse(Throwable $e, ServerRequestInterface $request = null): ResponseInterface
+    public function generateResponse(Throwable $e, bool $dispatchEvent = false): ResponseInterface
     {
-        $this->dispatcher->dispatch($event = createEvent($e, $request ?? $this->requestCreator->fromGlobals()));
-        return $this->generator->generateResponse($event->throwable, $event->serverRequest);
+        $request = $e?->serverRequest ?? $this->serverRequest;
+        if ($request  != null) {
+            $this->generator->setServerRequest($request);
+        }
+        
+        if ($dispatchEvent) {
+            $event = createEvent($e);
+            $this->dispatcher->dispatch($event);
+        }
+        
+        return $this->generator->generateResponse($event->throwable);
     }
 
     /**
