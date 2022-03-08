@@ -42,7 +42,7 @@ trait ErrorHandlerTrait
      */
     public function on(ErrorListenerInterface $listener): ErrorHandlerInterface
     {
-        $this->provider->listen(ErrorEvent::class, $listener, $listener->getPriority());
+        $this->provider->listen(ErrorEvent::class, $listener->handleEvent(...), $listener->getPriority());
         return $this;
     }
 }
