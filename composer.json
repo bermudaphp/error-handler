@@ -16,8 +16,7 @@
         "bermudaphp/eventor": "^1.2",
         "bermudaphp/config": "^1.1.1",
         "bermudaphp/http-emitter": "^1.0",
-        "bermudaphp/http-contracts": "^1.0",
-        "require nyholm/psr7-server": "^1.0.2",
+        "bermudaphp/http-contracts": "^1.1",
         "filp/whoops": "^2.14.5"
     }
 }
