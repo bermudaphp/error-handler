@@ -13,7 +13,7 @@ use Bermuda\HTTP\Contracts\ResponseFactoryAwareInterface;
 final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, ResponseFactoryAwareInterface, ServerRequestAwareInterface
 {
     private array $generators = [];
-    private ServerRequestInterface $serverRequest;
+    private ?ServerRequestInterface $serverRequest = null;
     public function __construct(private ResponseFactoryInterface $responseFactory, private WhoopsErrorGenerator $whoopsErrorGenerator) {
     }
 
