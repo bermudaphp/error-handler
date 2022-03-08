@@ -52,19 +52,19 @@ final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, R
         return false;
     }
 
-    public function canGenerate(Throwable $e, ServerRequestInterface $request = null): bool
+    public function canGenerate(Throwable $e): bool
     {
         return true;
     }
 
-    public function generateResponse(Throwable $e, ServerRequestInterface $request = null): ResponseInterface
+    public function generateResponse(Throwable $e): ResponseInterface
     {
         foreach ($this->generators as $generator) {
-            if ($generator->canGenerate($e, $request)) {
-                return $generator->generateResponse($e, $request);
+            if ($generator->canGenerate($e)) {
+                return $generator->generateResponse($e);
             }
         }
         
-        return $this->whoopsErrorGenerator->generateResponse($e, $request);
+        return $this->whoopsErrorGenerator->generateResponse($e);
     }
 }
