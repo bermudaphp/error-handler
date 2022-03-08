@@ -42,11 +42,8 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface, EventDispatch
         try {
             $response = $handler->handle($request);
         } catch (Throwable $e) {
-            if (!$e instanceof ServerException) {
-                $e = new ServerException($e, $request);
-            }
-            
-            $response = $this->errorHandler->generateResponse($e, true);
+            $response = $this->errorHandler->setServerRequest($request)
+                ->generateResponse($e, true);
         }
         
         restore_error_handler();
