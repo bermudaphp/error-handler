@@ -51,14 +51,19 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
         foreach($this->handlers as $handler) {
             if ($handler->canHandle($e)) {
                 if ($handler instanceof EventDispatcherAwareInterface) {
-                    $handler->setDispatcher($this->dispatcher)->handleException($e);
+                    $handler->setDispatcher($this->dispatcher);
                 }
-                $this->dispatcher->dispatch(createEvent($e));
+                
+                if ($this->serverRequest != null && $handler instanceof ServerRequestAwareInterface) {
+                    $handler->setServerRequest($this->serverRequest);
+                }
+                
+                $this->dispatcher->dispatch(new ErrorEvent($e));
                 $handler->handleException($e);
             }
         }
         
-        if ($e instanceof ServerException) {
+        if ($this->serverRequest != null) {
             $response = $this->generateResponse($e, true);
             $this->emitter->emit($response);
             exit;
@@ -78,17 +83,15 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
      */
     public function generateResponse(Throwable $e, bool $dispatchEvent = false): ResponseInterface
     {
-        $request = $e?->serverRequest ?? $this->serverRequest;
-        if ($request != null) {
-            $this->generator->setServerRequest($request);
+        if ($this->serverRequest != null) {
+            $this->generator->setServerRequest($request = $this->serverRequest);
         }
 
         if ($dispatchEvent) {
-            $event = createEvent($e);
-            $this->dispatcher->dispatch($event);
+            $this->dispatcher->dispatch(new ErrorEvent($e, $request));
         }
 
-        return $this->generator->generateResponse($event->throwable ?? ($e->throwable ?? $e));
+        return $this->generator->generateResponse($e);
     }
 
     /**
@@ -96,6 +99,10 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
      */                                         
     public function renderException(Throwable $e): string
     {
+        if ($this->serverRequest != null && $this->renderer instanceof ServerRequestAwareInterface) {
+            $this->renderer->setServerRequest($this->serverRequest);
+        }
+        
         return $this->renderer->renderException($e);
     }
     
