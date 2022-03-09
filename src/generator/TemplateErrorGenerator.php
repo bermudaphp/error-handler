@@ -37,8 +37,9 @@ final class TemplateErrorGenerator implements ErrorResponseGeneratorInterface, S
     public function generateResponse(Throwable $e): ResponseInterface
     {
         $code = get_error_code($e);
+        $request = $e?->serverRequest ?? $this->serverRequest;
         ($response = $this->responseFactory->createResponse($code)->withHeader('Content-Type', 'text/html'))
-            ->getBody()->write(($this->templateRenderer)($code, $e?->serverRequest ?? $this->serverRequest));
+            ->getBody()->write(($this->templateRenderer)($code, $request instanceof ServerRequestInterface ? $request : null));
         
         return $response;
     }
