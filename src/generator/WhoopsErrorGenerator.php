@@ -35,7 +35,7 @@ final class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface, Ser
     {
         $renderer = $this->renderer;
         
-        if (($request = $e?->serverRequest ?? $this->serverRequest) != null && $renderer instanceof ServerRequestAwareInterface) {
+        if (($request = $e?->serverRequest ?? $this->serverRequest) instanseof ServerRequestInterface && $renderer instanceof ServerRequestAwareInterface) {
             ($renderer = clone $renderer)->setServerRequest($request);
         }
         
