@@ -73,7 +73,7 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
         $this->dispatcher->dispatch(new ErrorEvent($e));
 
         if (PHP_SAPI != 'cli') {
-            http_send_status(get_error_code($e));
+            http_response_code(get_error_code($e));
         }
         
         exit($content);
