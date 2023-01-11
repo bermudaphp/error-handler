@@ -4,11 +4,11 @@ namespace Bermuda\ErrorHandler;
 
 use Whoops\Run;
 use Whoops\RunInterface;
-use Generator\WhoopsErrorGenerator;
 use Psr\Container\ContainerInterface;
 use Bermuda\ErrorHandler\Generator\ErrorResponseGenerator;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
+use Bermuda\ErrorHandler\Generator\WhoopsErrorGenerator;
 
 final class ConfigProvider extends \Bermuda\Config\ConfigProvider
 {
