@@ -3,7 +3,9 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Bermuda\\ErrorHandler\\": "src/"
+            "Bermuda\\ErrorHandler\\": "src/",
+            "Bermuda\\ErrorHandler\\Renderer\\": "src/renderer/",
+            "Bermuda\\ErrorHandler\\Generator\\": "src/generator/"
         },
         "files": [
             "src/helper.php"
