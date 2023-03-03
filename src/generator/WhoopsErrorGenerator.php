@@ -15,7 +15,10 @@ use function Bermuda\ErrorHandler\get_error_code;
 final class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface, ServerRequestAwareInterface
 {
     use ServerRequestAwareTrait;
-    public function __construct(private ResponseFactoryInterface $responseFactory, private WhoopsRenderer $renderer = new WhoopsRenderer) {
+    public function __construct(
+        private ResponseFactoryInterface $responseFactory, 
+        private WhoopsRenderer $renderer = new WhoopsRenderer
+    ) {
     }
 
     public function canGenerate(Throwable $e): bool
