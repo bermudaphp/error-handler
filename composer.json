@@ -19,6 +19,6 @@
         "bermudaphp/config": "^1.1.3",
         "bermudaphp/http-emitter": "^1.0",
         "bermudaphp/http-contracts": "^1.1",
-        "filp/whoops": "^2.14.5"
+        "filp/whoops": "^2.14.6|^2.15.1"
     }
 }
