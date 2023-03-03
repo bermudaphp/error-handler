@@ -60,7 +60,7 @@ final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, R
             $generator->setServerRequest($this->serverRequest);
         }
         
-        array_unshift($this->generators, $generator);
+        $this->generators[] = $generator;
         return $this;
     }
 
