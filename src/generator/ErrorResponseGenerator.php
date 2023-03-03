@@ -2,11 +2,11 @@
 
 namespace Bermuda\ErrorHandler\Generator;
 
-use Bermuda\HTTP\Contracts\ServerRequestAwareInterface;
 use Throwable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Bermuda\HTTP\Contracts\ServerRequestAwareInterface;
 use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 use Bermuda\HTTP\Contracts\ResponseFactoryAwareInterface;
 
@@ -29,6 +29,8 @@ final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, R
                 $generator->setServerRequest($serverRequest);
             }
         }
+
+        $this->whoopsErrorGenerator->setServerRequest($serverRequest);
         return $this;
     }
 
