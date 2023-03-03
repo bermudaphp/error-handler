@@ -2,14 +2,8 @@
 
 namespace Bermuda\ErrorHandler\Generator;
 
-use Throwable;
-use Whoops\Run;
-use Whoops\RunInterface;
-use Whoops\Handler\HandlerInterface;
-use Whoops\Handler\PrettyPageHandler;
 use Psr\Http\Message\ResponseInterface;
 use Bermuda\ErrorHandler\ServerException;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
 use Bermuda\HTTP\Contracts\ServerRequestAwareTrait;
@@ -34,12 +28,12 @@ final class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface, Ser
     public function generateResponse(Throwable $e): ResponseInterface
     {
         $renderer = $this->renderer;
+        $request = $e instanceof ServerException ? $e->serverRequest : $this->serverRequest;
         
-        if (($request = $e?->serverRequest ?? $this->serverRequest) instanceof ServerRequestInterface 
-            && $renderer instanceof ServerRequestAwareInterface) {
+        if ($request !== null && $renderer instanceof ServerRequestAwareInterface) {
             ($renderer = clone $renderer)->setServerRequest($request);
         }
-        
+
         $response = $this->responseFactory->createResponse(get_error_code($e));
         $response->getBody()->write($renderer->renderException($e));
         
