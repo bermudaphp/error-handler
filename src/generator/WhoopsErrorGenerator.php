@@ -2,6 +2,7 @@
 
 namespace Bermuda\ErrorHandler\Generator;
 
+use Throwable;
 use Psr\Http\Message\ResponseInterface;
 use Bermuda\ErrorHandler\ServerException;
 use Psr\Http\Message\ResponseFactoryInterface;
