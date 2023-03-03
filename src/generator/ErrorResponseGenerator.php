@@ -14,7 +14,11 @@ final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, R
 {
     private array $generators = [];
     private ?ServerRequestInterface $serverRequest = null;
-    public function __construct(private ResponseFactoryInterface $responseFactory, private WhoopsErrorGenerator $whoopsErrorGenerator) {
+    public function __construct(
+        private ResponseFactoryInterface $responseFactory, 
+        private ?WhoopsErrorGenerator $whoopsErrorGenerator = null
+    ) {
+        if (!$whoopsErrorGenerator) $this->whoopsErrorGenerator = new WhoopsErrorGenerator($responseFactory);
     }
 
     /**
