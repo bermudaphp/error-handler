@@ -1,6 +1,6 @@
 <?php
 
-namespace Bermuda\ErrorHandler;
+namespace Bermuda\ErrorHandler\Listener;
 
 interface ErrorListenerInterface
 {
