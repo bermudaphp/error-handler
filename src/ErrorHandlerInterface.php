@@ -4,9 +4,8 @@ namespace Bermuda\ErrorHandler;
 
 use Throwable;
 
-interface ErrorHandlerInterface
+interface ErrorHandlerInterface extends ExceptionHandlerInterface
 {
     public function canHandle(Throwable $e): bool ;
-    public function handleException(Throwable $e): never ;
-    public function on(ErrorListenerInterface $listener): ErrorHandlerInterface ;
+    public function listen(ErrorListenerInterface $listener): ErrorHandlerInterface ;
 }

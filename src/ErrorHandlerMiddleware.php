@@ -2,6 +2,8 @@
 
 namespace Bermuda\ErrorHandler;
 
+use Bermuda\Config\Config;
+use Psr\Container\ContainerInterface;
 use Throwable;
 use Bermuda\Eventor\EventDispatcher;
 use Psr\Http\Message\ResponseInterface;
@@ -10,10 +12,13 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\EventDispatcherAwareInterface;
+use function Bermuda\Config\conf;
 
 final class ErrorHandlerMiddleware implements MiddlewareInterface, EventDispatcherAwareInterface
 {
-    public function __construct(private ErrorHandler $errorHandler, private int $errorLevel = E_ALL
+    public function __construct(
+        private ErrorHandler $errorHandler,
+        private int $errorLevel = E_ALL
     ) {
     }
 
@@ -33,11 +38,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface, EventDispatch
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $old = error_reporting($this->errorLevel);
-        set_error_handler(static function(int $errno, string $msg, string $file, int $line): void {
-            if ((error_reporting() & $errno)) {
-                throw new \ErrorException($msg, 0, $errno, $file, $line);
-            }
-        });
+        set_error_handler(createExceptionHandlerCallback());
 
         try {
             $response = $handler->handle($request);
@@ -56,9 +57,17 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface, EventDispatch
      * @param ErrorListenerInterface $listener
      * @return static
      */
-    public function on(ErrorListenerInterface $listener): self
+    public function listen(ErrorListenerInterface $listener): self
     {
-        $this->errorHandler->on($listener);
+        $this->errorHandler->listen($listener);
         return $this;
+    }
+
+    public static function createFromContainer(ContainerInterface $container): self
+    {
+        return new ErrorHandlerMiddleware(
+            $container->get(ErrorHandler::class),
+            conf($container)->get(ConfigProvider::CONFIG_KEY_ERROR_LEVEL, E_ALL)
+        );
     }
 }

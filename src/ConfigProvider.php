@@ -13,9 +13,9 @@ use Bermuda\ErrorHandler\Generator\WhoopsErrorGenerator;
 
 final class ConfigProvider extends \Bermuda\Config\ConfigProvider
 {
-    const error_handling = 'error_handling';
-    const error_level = 'error_level';
-    const error_whoops_renderer_configurator = 'error_whoops_renderer_configurator';
+    public const string CONFIG_KEY_ERROR_LEVEL = 'Bermuda\ErrorHandler::error_level';
+    public const string CONFIG_KEY_GENERATORS = 'Bermuda\ErrorHandler::generators';
+    public const string CONFIG_KEY_CONFIGURATOR = 'Bermuda\ErrorHandler::configurator';
 
     /**
      * @inheritDoc
@@ -23,26 +23,19 @@ final class ConfigProvider extends \Bermuda\Config\ConfigProvider
     protected function getFactories(): array
     {
         return [
-            ErrorHandler::class => ErrorHandlerFactory::class,
-            ErrorHandlerMiddleware::class => static function(ContainerInterface $container) {
-                return new ErrorHandlerMiddleware($container->get(ErrorHandler::class), 
-                    $container->get(Config::app_config)[self::error_handling][self::error_level] ?? E_ALL
-                );
-            },
-            ErrorResponseGenerator::class => ErrorResponseGeneratorFactory::class,
-            WhoopsErrorGenerator::class => static fn(ContainerInterface $container) => new WhoopsErrorGenerator($container->get(ResponseFactoryInterface::class)),
-            WhoopsRenderer::class => static fn(ContainerInterface $container) => new WhoopsRenderer(
-                $container->has(RunInterface::class) ? $container->get(RunInterface::class) : new Run,
-                $container->get(Config::app_config)[self::error_handling][self::error_whoops_renderer_configurator] ?? null
-            ),
+            ErrorHandler::class => [ErrorHandler::class, 'createFromContainer'],
+            ErrorHandlerMiddleware::class => [ErrorHandlerMiddleware::class, 'createFromContainer'],
+            ErrorResponseGenerator::class => [ErrorResponseGenerator::class, 'createFromContainer'],
+            WhoopsErrorGenerator::class => [WhoopsErrorGenerator::class, 'createFromContainer'],
+            WhoopsRenderer::class => [WhoopsRenderer::class, 'createFromContainer'],
         ];
     }
     
     protected function getAliases(): array
     {
         return [
-            ErrorRendererInterface::class => WhoopsRenderer::class,
-            ErrorResponseGeneratorInterface::class => ErrorResponseGenerator::class
+            Renderer\ErrorRendererInterface::class => WhoopsRenderer::class,
+            Generator\ErrorResponseGeneratorInterface::class => ErrorResponseGenerator::class
         ];
     }
 }
