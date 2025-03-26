@@ -138,9 +138,9 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
 
     /**
      * @param ErrorListenerInterface $listener
-     * @return static
+     * @return $this
      */
-    public function listen(ErrorListenerInterface $listener): ErrorHandlerInterface
+    public function listen(Listener\ErrorListenerInterface $listener): ErrorHandlerInterface
     {
         $this->provider->listen(ErrorEvent::class, $listener->handleEvent(...), $listener->priority);
         return $this;
