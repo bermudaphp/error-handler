@@ -11,6 +11,5 @@ $pipeline->pipe($errorHandler); // Add ErrorHandlerMiddleware at the beginning o
 ````
 # Event listening
 ```php
-$errorListenerInterfaceInstance = new LogErrorListener($logger);
 $errorHandler->listen(new Listener\LoggerListener($logger);
 ````
