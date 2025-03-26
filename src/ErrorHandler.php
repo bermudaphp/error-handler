@@ -2,23 +2,22 @@
 
 namespace Bermuda\ErrorHandler;
 
-use Bermuda\ErrorHandler\Generator\ErrorResponseGenerator;
-use Psr\Container\ContainerInterface;
 use Throwable;
 use Bermuda\HTTP\Emitter;
 use Bermuda\HTTP\Contracts\ServerRequestAwareInterface;
 use Bermuda\HTTP\Contracts\ServerRequestAwareTrait;
-use Bermuda\Eventor\EventDispatcher;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Bermuda\Eventor\EventDispatcherFactoryInterface;
+use Bermuda\Eventor\EventDispatcherFactory;
 use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\EventDispatcherAwareInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
+use Bermuda\ErrorHandler\Generator\ErrorResponseGenerator;
 use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
-use Nyholm\Psr7Server\ServerRequestCreator;
-use Nyholm\Psr7Server\ServerRequestCreatorInterface;
 
 /**
  * @method self setServerRequest(ServerRequestInterface $serverRequest)
@@ -35,7 +34,7 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
     public function __construct(
         private Generator\ErrorResponseGenerator $generator,
         private EmitterInterface $emitter = new Emitter,
-        private ErrorRendererInterface $renderer = new WhoopsRenderer,
+        private Renderer\ErrorRendererInterface $renderer = new WhoopsRenderer,
         EventDispatcherFactoryIntreface $dispatcherFactory = new EventDispatcherFactory
     ) {
         $this->provider = new PrioritizedProvider;
