@@ -2,34 +2,21 @@
 
 namespace Bermuda\ErrorHandler;
 
-use Bermuda\Config\Config;
-use Psr\Container\ContainerInterface;
 use Throwable;
-use Bermuda\Eventor\EventDispatcher;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Bermuda\Eventor\EventDispatcherInterface;
-use Bermuda\Eventor\EventDispatcherAwareInterface;
+
 use function Bermuda\Config\conf;
 
-final class ErrorHandlerMiddleware implements MiddlewareInterface, EventDispatcherAwareInterface
+final class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private ErrorHandler $errorHandler,
         private int $errorLevel = E_ALL
     ) {
-    }
-
-    /**
-     * @param EventDispatcherInterface $dispatcher
-     * @return self
-     */
-    public function setDispatcher(EventDispatcherInterface $dispatcher): EventDispatcherAwareInterface
-    {
-        $this->errorHandler->setDispatcher($dispatcher);
-        return $this;
     }
 
     /**
@@ -57,7 +44,7 @@ final class ErrorHandlerMiddleware implements MiddlewareInterface, EventDispatch
      * @param ErrorListenerInterface $listener
      * @return static
      */
-    public function listen(ErrorListenerInterface $listener): self
+    public function listen(Listener\ErrorListenerInterface $listener): self
     {
         $this->errorHandler->listen($listener);
         return $this;
