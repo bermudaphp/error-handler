@@ -4,5 +4,5 @@ namespace Bermuda\ErrorHandler;
 
 interface ExceptionHandlerInterface
 {
-    public function handleException(Throwable $e): never ;
+    public function handleException(\Throwable $e): never ;
 }
