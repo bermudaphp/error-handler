@@ -2,6 +2,9 @@
 
 namespace Bermuda\ErrorHandler\Renderer;
 
+use Bermuda\Config\Config;
+use Bermuda\ErrorHandler\ConfigProvider;
+use Psr\Container\ContainerInterface;
 use Throwable;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
@@ -9,16 +12,22 @@ use Whoops\Run;
 use Whoops\RunInterface;
 use Whoops\Handler\PlainTextHandler;
 use Whoops\Util\Misc;
-use Bermuda\ErrorHandler\ErrorRendererInterface;
 use Bermuda\HTTP\Contracts\ServerRequestAwareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use function Bermuda\Config\conf;
 
 final class WhoopsRenderer implements ErrorRendererInterface, ServerRequestAwareInterface
 {
+    /**
+     * @var callable|null
+     */
     private $configurator = null;
     private ?ServerRequestInterface $request = null;
-    public function __construct(private RunInterface $whoops = new Run, callable $configurator = null)
-    {
+
+    public function __construct(
+        private RunInterface $whoops = new Run,
+        ?callable $configurator = null
+    ) {
         $this->setWhoops($whoops)->configurator = $configurator;
     }
   
@@ -74,5 +83,13 @@ final class WhoopsRenderer implements ErrorRendererInterface, ServerRequestAware
         }
         
         return $this->whoops->handleException($e);
+    }
+
+    public static function createFromContainer(ContainerInterface $container): self
+    {
+        return new WhoopsRenderer(
+            $container->has(RunInterface::class) ? $container->get(RunInterface::class) : new Run,
+            conf($container)->get(ConfigProvider::CONFIG_KEY_CONFIGURATOR)
+        );
     }
 }
