@@ -11,5 +11,5 @@ $pipeline->pipe($errorHandler); // Add ErrorHandlerMiddleware at the beginning o
 ````
 # Event listening
 ```php
-$errorHandler->listen(new Listener\LoggerListener($logger);
+$errorHandler->listen(new Listener\LoggerListener($logger));
 ````
