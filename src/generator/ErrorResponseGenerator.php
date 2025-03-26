@@ -3,17 +3,25 @@
 namespace Bermuda\ErrorHandler\Generator;
 
 use Throwable;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Bermuda\ErrorHandler\ConfigProvider;
 use Bermuda\HTTP\Contracts\ServerRequestAwareInterface;
-use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
 use Bermuda\HTTP\Contracts\ResponseFactoryAwareInterface;
+
+use function Bermuda\Config\conf;
 
 final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, ResponseFactoryAwareInterface, ServerRequestAwareInterface
 {
+
+    /**
+     * @var ErrorResponseGeneratorInterface[]
+     */
     private array $generators = [];
     private ?ServerRequestInterface $serverRequest = null;
+
     public function __construct(
         private ResponseFactoryInterface $responseFactory, 
         private ?WhoopsErrorGenerator $whoopsErrorGenerator = null
@@ -46,9 +54,7 @@ final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, R
     {
         $this->pesponseFactory = $factory;
         foreach ($this->generators as $generator) {
-            if ($generator instanceof ResponseFactoryAwareInterface) {
-                $generator->setResponseFactory($factory);
-            }
+            if ($generator instanceof ResponseFactoryAwareInterface) $generator->setResponseFactory($factory);
         }
         
         return $this;
@@ -64,19 +70,13 @@ final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, R
             $generator->setServerRequest($this->serverRequest);
         }
         
-        $this->generators[] = $generator;
+        $this->generators[$generator::class] = $generator;
         return $this;
     }
 
     public function hasGenerator(string|ErrorResponseGeneratorInterface $generator): bool
     {
-        foreach ($this->generators as $g) {
-            if ($g::class == is_string($generator) ? $generator : $generator::class) {
-                return true;
-            }
-        }
-        
-        return false;
+        return isset($this->generators[is_string($generator) ? $generator : $generator::class]);
     }
 
     public function canGenerate(Throwable $e): bool
@@ -87,11 +87,22 @@ final class ErrorResponseGenerator implements ErrorResponseGeneratorInterface, R
     public function generateResponse(Throwable $e): ResponseInterface
     {
         foreach ($this->generators as $generator) {
-            if ($generator->canGenerate($e)) {
-                return $generator->generateResponse($e);
-            }
+            if ($generator->canGenerate($e)) return $generator->generateResponse($e);
         }
         
         return $this->whoopsErrorGenerator->generateResponse($e);
+    }
+
+    public static function createFromContainer(ContainerInterface $container): self
+    {
+        $generator = new self(
+            $container->get(ResponseFactoryInterface::class),
+            $container->get(WhoopsErrorGenerator::class)
+        );
+
+        $generators = conf($container)->get(ConfigProvider::CONFIG_KEY_GENERATORS, []);
+        if (is_iterable($generators)) foreach ($generators as $g) $generator->addGenerator($g);
+
+        return $generator;
     }
 }

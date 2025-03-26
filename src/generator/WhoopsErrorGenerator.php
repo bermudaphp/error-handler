@@ -3,18 +3,20 @@
 namespace Bermuda\ErrorHandler\Generator;
 
 use Throwable;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Bermuda\ErrorHandler\ServerException;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
 use Bermuda\HTTP\Contracts\ServerRequestAwareTrait;
 use Bermuda\HTTP\Contracts\ServerRequestAwareInterface;
-use Bermuda\ErrorHandler\ErrorResponseGeneratorInterface;
-use function Bermuda\ErrorHandler\get_error_code;
+
+use function Bermuda\ErrorHandler\getErrorCode;
 
 final class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface, ServerRequestAwareInterface
 {
     use ServerRequestAwareTrait;
+
     public function __construct(
         private ResponseFactoryInterface $responseFactory, 
         private WhoopsRenderer $renderer = new WhoopsRenderer
@@ -31,16 +33,20 @@ final class WhoopsErrorGenerator implements ErrorResponseGeneratorInterface, Ser
      */
     public function generateResponse(Throwable $e): ResponseInterface
     {
-        $renderer = $this->renderer;
-        $request = $e instanceof ServerException ? $e->serverRequest : $this->serverRequest;
+        $request = $e?->serverRequest ?? $this->serverRequest;
         
-        if ($request !== null && $renderer instanceof ServerRequestAwareInterface) {
-            ($renderer = clone $renderer)->setServerRequest($request);
+        if ($request !== null && $this->renderer instanceof ServerRequestAwareInterface) {
+            ($renderer = clone $this->renderer)->setServerRequest($request);
         }
 
-        $response = $this->responseFactory->createResponse(get_error_code($e));
+        $response = $this->responseFactory->createResponse(getErrorCode($e));
         $response->getBody()->write($renderer->renderException($e));
         
         return $response;
+    }
+
+    public static function createFromContainer(ContainerInterface $container): self
+    {
+        return new self($container->get(ResponseFactoryInterface::class));
     }
 }
