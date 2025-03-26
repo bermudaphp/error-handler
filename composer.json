@@ -5,20 +5,21 @@
         "psr-4": {
             "Bermuda\\ErrorHandler\\": "src/",
             "Bermuda\\ErrorHandler\\Renderer\\": "src/renderer/",
-            "Bermuda\\ErrorHandler\\Generator\\": "src/generator/"
+            "Bermuda\\ErrorHandler\\Generator\\": "src/generator/",
+            "Bermuda\\ErrorHandler\\Listener\\\\": "src/listener/"
         },
         "files": [
-            "src/helper.php"
+            "src/functions.php"
         ]
     },
     "require": {
-        "php": "^8.1",
+        "php": "^8.4",
         "psr/log": "^1.1.3 || ^2.0 || ^3.0",
         "psr/http-factory": "^1.0.1",
-        "bermudaphp/eventor": "^1.2",
+        "bermudaphp/eventor": "^1.3",
         "bermudaphp/config": "^1.3",
         "bermudaphp/http-emitter": "^1.0",
         "bermudaphp/http-contracts": "^1.1",
-        "filp/whoops": "^2.15.1"
+        "filp/whoops": "^2.18.0"
     }
 }
