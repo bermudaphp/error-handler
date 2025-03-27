@@ -16,7 +16,9 @@ use Bermuda\Eventor\EventDispatcherInterface;
 use Bermuda\Eventor\EventDispatcherAwareInterface;
 use Bermuda\Eventor\Provider\PrioritizedProvider;
 use Bermuda\ErrorHandler\Renderer\WhoopsRenderer;
+use Bermuda\ErrorHandler\Renderer\ErrorRendererInterface;
 use Bermuda\ErrorHandler\Generator\ErrorResponseGenerator;
+use Bermuda\ErrorHandler\Generator\ErrorResponseGeneratorInterface;
 use Laminas\HttpHandlerRunner\Emitter\EmitterInterface;
 
 /**
@@ -30,12 +32,13 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
 
     private array $handlers = [];
     private PrioritizedProvider $provider;
+    private EventDispatcherInterface $dispatcher;
 
     public function __construct(
         private Generator\ErrorResponseGenerator $generator,
         private EmitterInterface $emitter = new Emitter,
         private Renderer\ErrorRendererInterface $renderer = new WhoopsRenderer,
-        EventDispatcherFactoryIntreface $dispatcherFactory = new EventDispatcherFactory
+        EventDispatcherFactoryInterface $dispatcherFactory = new EventDispatcherFactory
     ) {
         $this->provider = new PrioritizedProvider;
         $this->dispatcher = $dispatcherFactory->makeDispatcher([$this->provider]);
