@@ -13,6 +13,7 @@ use Bermuda\ErrorHandler\Generator\WhoopsErrorGenerator;
 
 final class ConfigProvider extends \Bermuda\Config\ConfigProvider
 {
+    public const string CONFIG_KEY_ERROR_LISTENERS = 'Bermuda\ErrorHandler::error_listeners';
     public const string CONFIG_KEY_ERROR_LEVEL = 'Bermuda\ErrorHandler::error_level';
     public const string CONFIG_KEY_GENERATORS = 'Bermuda\ErrorHandler::generators';
     public const string CONFIG_KEY_CONFIGURATOR = 'Bermuda\ErrorHandler::configurator';
