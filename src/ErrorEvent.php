@@ -8,12 +8,8 @@ use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 class ErrorEvent
 {
     public function __construct(
-        public readonly Throwable               $exception,
+        public readonly Throwable $exception,
         public readonly ?ServerRequestInterface $serverRequest = null,
-        public ?ResponseInterface               $response = null {
-            set(ResponseInterface $value) {
-                $this->response = $value;
-            }
-        }
+        public ?ResponseInterface $response = null
     )  {}
 }
