@@ -100,12 +100,15 @@ final class ErrorHandler implements ErrorHandlerInterface, ErrorRendererInterfac
     public function generateResponse(Throwable $e, bool $dispatchEvent = false): ResponseInterface
     {
         if ($this->serverRequest) $this->generator->setServerRequest($this->serverRequest);
+
+        $response = $this->generator->generateResponse($e);
+
         if ($dispatchEvent) {
-            $event = $this->dispatcher->dispatch(new ErrorEvent($e, $this->serverRequest), $this->generator->generateResponse($e));
-            return $event->response;
+            $event = $this->dispatcher->dispatch(new ErrorEvent($e, $this->serverRequest), $response);
+            return $event->response ?? $response;
         }
 
-        return $this->generator->generateResponse($e);
+        return $response;
     }
 
     /**
